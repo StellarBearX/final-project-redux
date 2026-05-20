@@ -1,0 +1,88 @@
+/* ─── Design Tokens — Aerodynamic Minimalism ─── */
+:root {
+  --color-navy-900: #0a0e1a;
+  --color-navy-800: #0f1628;
+  --color-navy-700: #162040;
+  --color-navy-600: #1e2d57;
+  --color-navy-500: #263570;
+  --color-steel-400: #8a9bbf;
+  --color-steel-300: #b0bdd8;
+  --color-steel-200: #d1d8ea;
+  --color-steel-100: #edf0f7;
+  --color-white: #f7f9ff;
+  --color-accent-gold: #c9a84c;
+  --color-accent-sky: #4da6ff;
+
+  --color-status-ontime: #3ecf8e;
+  --color-status-delayed: #f5a623;
+  --color-status-cancelled: #e5534b;
+  --color-status-boarding: #4da6ff;
+
+  --glass-bg: rgba(22, 32, 64, 0.55);
+  --glass-border: rgba(176, 189, 216, 0.18);
+  --glass-blur: blur(18px);
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.6);
+
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+}
+
+/* ─── Reset ─── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  /* Transparent — the fixed global background in App.tsx shows through */
+  background-color: transparent;
+  color: var(--color-white);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, select, textarea { font-family: inherit; font-size: inherit; }
+ul, ol { list-style: none; }
+img, svg { display: block; max-width: 100%; }
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
