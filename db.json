@@ -1,0 +1,188 @@
+{
+  "flights": [
+    {
+      "id": "1",
+      "flightNumber": "NM101",
+      "origin": "BKK",
+      "destination": "LHR",
+      "departureTime": "08:30",
+      "arrivalTime": "14:45",
+      "status": "On Time",
+      "aircraftId": "HS-TGA",
+      "gate": "A12"
+    },
+    {
+      "id": "2",
+      "flightNumber": "NM202",
+      "origin": "BKK",
+      "destination": "NRT",
+      "departureTime": "11:15",
+      "arrivalTime": "19:00",
+      "status": "Boarding",
+      "aircraftId": "HS-TGB",
+      "gate": "B04"
+    },
+    {
+      "id": "3",
+      "flightNumber": "NM303",
+      "origin": "SIN",
+      "destination": "BKK",
+      "departureTime": "14:00",
+      "arrivalTime": "15:20",
+      "status": "Delayed",
+      "aircraftId": "HS-TGC",
+      "gate": "C07"
+    },
+    {
+      "id": "4",
+      "flightNumber": "NM404",
+      "origin": "BKK",
+      "destination": "DXB",
+      "departureTime": "23:55",
+      "arrivalTime": "03:30",
+      "status": "On Time",
+      "aircraftId": "HS-TGD",
+      "gate": "D02"
+    },
+    {
+      "id": "5",
+      "flightNumber": "NM505",
+      "origin": "CDG",
+      "destination": "BKK",
+      "departureTime": "07:00",
+      "arrivalTime": "22:15",
+      "status": "On Time",
+      "aircraftId": "HS-TGE",
+      "gate": "A01"
+    },
+    {
+      "id": "6",
+      "flightNumber": "NM606",
+      "origin": "BKK",
+      "destination": "SYD",
+      "departureTime": "16:30",
+      "arrivalTime": "06:45",
+      "status": "Cancelled",
+      "aircraftId": "HS-TGF",
+      "gate": "B11"
+    },
+    {
+      "id": "7",
+      "flightNumber": "NM707",
+      "origin": "HKG",
+      "destination": "BKK",
+      "departureTime": "09:45",
+      "arrivalTime": "11:50",
+      "status": "Boarding",
+      "aircraftId": "HS-TGA",
+      "gate": "C03"
+    },
+    {
+      "id": "8",
+      "flightNumber": "NM808",
+      "origin": "BKK",
+      "destination": "KUL",
+      "departureTime": "13:20",
+      "arrivalTime": "16:10",
+      "status": "On Time",
+      "aircraftId": "HS-TGB",
+      "gate": "A08"
+    },
+    {
+      "id": "9",
+      "flightNumber": "NM909",
+      "origin": "MNL",
+      "destination": "BKK",
+      "departureTime": "06:00",
+      "arrivalTime": "08:15",
+      "status": "Delayed",
+      "aircraftId": "HS-TGC",
+      "gate": "D09"
+    },
+    {
+      "id": "10",
+      "flightNumber": "NM010",
+      "origin": "BKK",
+      "destination": "LAX",
+      "departureTime": "00:15",
+      "arrivalTime": "18:30",
+      "status": "On Time",
+      "aircraftId": "HS-TGG",
+      "gate": "B06"
+    }
+  ],
+  "aircraft": [
+    {
+      "id": "1",
+      "registration": "HS-TGA",
+      "model": "Boeing 777-300ER",
+      "manufacturer": "Boeing",
+      "capacity": 396,
+      "status": "Active",
+      "yearOfManufacture": 2015
+    },
+    {
+      "id": "2",
+      "registration": "HS-TGB",
+      "model": "Airbus A350-900",
+      "manufacturer": "Airbus",
+      "capacity": 325,
+      "status": "Active",
+      "yearOfManufacture": 2018
+    },
+    {
+      "id": "3",
+      "registration": "HS-TGC",
+      "model": "Boeing 787-9 Dreamliner",
+      "manufacturer": "Boeing",
+      "capacity": 296,
+      "status": "Active",
+      "yearOfManufacture": 2019
+    },
+    {
+      "id": "4",
+      "registration": "HS-TGD",
+      "model": "Airbus A380-800",
+      "manufacturer": "Airbus",
+      "capacity": 507,
+      "status": "Maintenance",
+      "yearOfManufacture": 2012
+    },
+    {
+      "id": "5",
+      "registration": "HS-TGE",
+      "model": "Boeing 777-200LR",
+      "manufacturer": "Boeing",
+      "capacity": 317,
+      "status": "Active",
+      "yearOfManufacture": 2014
+    },
+    {
+      "id": "6",
+      "registration": "HS-TGF",
+      "model": "Airbus A330-300",
+      "manufacturer": "Airbus",
+      "capacity": 289,
+      "status": "Maintenance",
+      "yearOfManufacture": 2010
+    },
+    {
+      "id": "7",
+      "registration": "HS-TGG",
+      "model": "Boeing 787-8 Dreamliner",
+      "manufacturer": "Boeing",
+      "capacity": 248,
+      "status": "Active",
+      "yearOfManufacture": 2017
+    },
+    {
+      "id": "8",
+      "registration": "HS-TGH",
+      "model": "Airbus A320neo",
+      "manufacturer": "Airbus",
+      "capacity": 180,
+      "status": "Retired",
+      "yearOfManufacture": 2008
+    }
+  ]
+}
