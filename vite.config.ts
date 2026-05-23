@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       // /api/v1/flights  →  http://localhost:3001/api/v1/flights
       // /api/v1/aircraft →  http://localhost:3001/api/v1/aircraft
-      '/api/v1': {
+      '/api': {
         target: 'http://localhost:3001',
         changeOrigin: true,
       },
