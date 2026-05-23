@@ -1,29 +1,21 @@
-# Nimbus Fleet Manager
+<div align="center">
 
-![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-2-764ABC?style=flat-square&logo=redux&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+# ✈ Nimbus Fleet Manager
 
-A full-stack airline operations dashboard for managing flights and aircraft fleets. Built with React, TypeScript, and Redux Toolkit — featuring real-time data sync via RTK Query, full CRUD operations, and a production deployment across Vercel (frontend) and Railway (backend).
+**A modern airline fleet and flight operations dashboard**
 
----
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-2-764ABC?style=for-the-badge&logo=redux&logoColor=white)](https://redux-toolkit.js.org)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev)
+[![License](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](LICENSE)
 
-## Table of Contents
+[![Vercel](https://img.shields.io/badge/Frontend-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com)
+[![Railway](https://img.shields.io/badge/Backend-Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app)
 
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Installation & Setup](#installation--setup)
-- [Environment Variables](#environment-variables)
-- [Available Scripts](#available-scripts)
-- [API Endpoints](#api-endpoints)
-- [Deployment](#deployment)
-- [Screenshots](#screenshots)
-- [Future Improvements](#future-improvements)
-- [Author](#author)
+[Live Demo](#live-demo) · [Features](#features) · [Quick Start](#installation--setup) · [API Docs](#api-endpoints)
+
+</div>
 
 ---
 
@@ -35,23 +27,49 @@ The frontend is built entirely with **React 19** and **TypeScript**, using **Red
 
 ---
 
+## Table of Contents
+
+- [Live Demo](#live-demo)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Installation & Setup](#installation--setup)
+- [Environment Variables](#environment-variables)
+- [Available Scripts](#available-scripts)
+- [API Endpoints](#api-endpoints)
+- [Deployment Architecture](#deployment-architecture)
+- [Screenshots](#screenshots)
+- [Future Improvements](#future-improvements)
+- [Author](#author)
+
+---
+
+## Live Demo
+
+| Service | URL |
+|---|---|
+| Frontend (Vercel) | _Deploy and add your URL here_ |
+| Backend API (Railway) | _Deploy and add your URL here_ |
+
+---
+
 ## Features
 
 ### Flight Management
 - **Flight list** — searchable table across flight number, origin, destination, and gate
 - **Status filters** — chip-based filter by On Time / Delayed / Boarding / Cancelled with live counts
-- **Flight details** — dedicated detail page per flight
+- **Flight details** — dedicated detail page per flight with full record display
 - **Create flight** — validated form with IATA code enforcement and time format checks
-- **Edit flight** — pre-populated form, patches existing record via PUT
-- **Delete flight** — confirmation modal before destructive action
+- **Edit flight** — pre-populated form, patches existing record via `PUT`
+- **Delete flight** — confirmation modal before any destructive action
 
 ### Fleet Management
 - **Aircraft registry** — glassmorphism card grid for every aircraft in the fleet
 - **Fleet statistics** — live stat strip showing total / active / maintenance / retired counts
-- **Loading skeletons** — shimmer cards during data fetch
+- **Loading skeletons** — shimmer cards render during data fetch
 
 ### UX & Reliability
-- **RTK Query caching** — responses cached with tag-based invalidation; no redundant requests
+- **RTK Query caching** — responses cached with tag-based invalidation; no redundant network requests
 - **Optimistic error handling** — all mutations use `.unwrap()` inside `try/catch`; failures surface an inline error message and navigation only triggers on success
 - **Loading states** — skeleton rows on the flights table, skeleton cards on the fleet grid
 - **Error states** — dedicated error UI with retry action on every data-fetch failure
@@ -61,19 +79,19 @@ The frontend is built entirely with **React 19** and **TypeScript**, using **Red
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| UI Framework | React 19 |
-| Language | TypeScript 6 |
-| State Management | Redux Toolkit 2 |
-| Data Fetching | RTK Query |
-| Routing | React Router v7 |
-| Build Tool | Vite 8 |
-| Styling | CSS Modules |
-| Backend API | Custom Node.js REST server |
-| Database | JSON flat-file (`db.json`) |
-| Frontend Host | Vercel |
-| Backend Host | Railway |
+| Layer | Technology | Version |
+|---|---|---|
+| UI Framework | React | 19 |
+| Language | TypeScript | 6 |
+| State Management | Redux Toolkit | 2 |
+| Data Fetching | RTK Query | (bundled with RTK) |
+| Routing | React Router | v7 |
+| Build Tool | Vite | 8 |
+| Styling | CSS Modules | — |
+| Backend API | Custom Node.js REST server | — |
+| Database | JSON flat-file (`db.json`) | — |
+| Frontend Host | Vercel | — |
+| Backend Host | Railway | — |
 
 ---
 
@@ -82,29 +100,32 @@ The frontend is built entirely with **React 19** and **TypeScript**, using **Red
 ```
 nimbus-fleet-manager/
 ├── public/
+│   ├── favicon.svg
+│   └── icons.svg
+│
 ├── src/
 │   ├── app/
-│   │   ├── hooks.ts          # Typed useAppDispatch / useAppSelector
-│   │   ├── store.ts          # Redux store — injects RTK Query reducers
-│   │   └── uiSlice.ts        # UI state slice (sidebar, theme)
+│   │   ├── hooks.ts            # Typed useAppDispatch / useAppSelector
+│   │   ├── store.ts            # Redux store — injects RTK Query reducers
+│   │   └── uiSlice.ts          # UI state slice (sidebar, theme)
 │   │
 │   ├── components/ui/
-│   │   ├── AppShell.tsx      # Top nav + sidebar shell
-│   │   ├── Button.tsx        # Polymorphic button (primary/secondary/ghost/danger)
-│   │   ├── Input.tsx         # Labelled input with inline error display
-│   │   ├── Select.tsx        # Styled select with same API as Input
-│   │   └── StatusBadge.tsx   # Colour-coded flight/aircraft status pill
+│   │   ├── AppShell.tsx        # Top nav + sidebar shell
+│   │   ├── Button.tsx          # Polymorphic button (primary/secondary/ghost/danger)
+│   │   ├── Input.tsx           # Labelled input with inline error display
+│   │   ├── Select.tsx          # Styled select with same API as Input
+│   │   └── StatusBadge.tsx     # Colour-coded flight/aircraft status pill
 │   │
 │   ├── features/
 │   │   ├── flights/
-│   │   │   ├── flightsApi.ts       # RTK Query API slice (CRUD + tag invalidation)
-│   │   │   ├── flightsSelectors.ts # Memoised selectors for filtered flights & stats
-│   │   │   ├── FlightForm.tsx      # Add / Edit form with field-level validation
-│   │   │   └── FlightsList.tsx     # Table, search bar, filter chips, delete modal
+│   │   │   ├── flightsApi.ts         # RTK Query API slice (CRUD + tag invalidation)
+│   │   │   ├── flightsSelectors.ts   # Memoised selectors for filtered flights & stats
+│   │   │   ├── FlightForm.tsx        # Add / Edit form with field-level validation
+│   │   │   └── FlightsList.tsx       # Table, search bar, filter chips, delete modal
 │   │   │
 │   │   └── fleet/
-│   │       ├── fleetApi.ts         # RTK Query API slice (read-only aircraft list)
-│   │       └── FleetList.tsx       # Aircraft card grid with skeleton loading
+│   │       ├── fleetApi.ts           # RTK Query API slice (read-only aircraft list)
+│   │       └── FleetList.tsx         # Aircraft card grid with skeleton loading
 │   │
 │   ├── pages/
 │   │   ├── HomePage.tsx
@@ -113,14 +134,14 @@ nimbus-fleet-manager/
 │   │   ├── FleetPage.tsx
 │   │   └── NotFoundPage.tsx
 │   │
-│   ├── App.tsx               # Route definitions
-│   └── main.tsx              # Redux Provider + Router entry point
+│   ├── App.tsx                 # Route definitions
+│   └── main.tsx                # Redux Provider + Router entry point
 │
-├── server.cjs                # Dependency-free Node.js REST API
-├── db.json                   # JSON flat-file database
+├── server.cjs                  # Dependency-free Node.js REST API
+├── db.json                     # JSON flat-file database
 ├── vite.config.ts
-├── vercel.json               # SPA rewrite rule
-├── nixpacks.toml             # Railway build config
+├── vercel.json                 # SPA rewrite rule for client-side routing
+├── nixpacks.toml               # Railway build configuration
 ├── .env.example
 └── package.json
 ```
@@ -131,13 +152,13 @@ nimbus-fleet-manager/
 
 ### Prerequisites
 
-- Node.js **20.x** or later
-- npm **9+**
+- **Node.js** 20.x or later
+- **npm** 9+
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/nimbus-fleet-manager.git
+git clone https://github.com/Yasatsawin/nimbus-fleet-manager.git
 cd nimbus-fleet-manager
 ```
 
@@ -153,7 +174,7 @@ npm install
 cp .env.example .env
 ```
 
-The default value works out of the box for local development — the Vite dev server proxy handles routing to the local API:
+The default value works out of the box for local development — the Vite dev server proxy forwards `/api` calls to the local API server automatically:
 
 ```env
 VITE_API_BASE_URL=/api/v1
@@ -162,10 +183,10 @@ VITE_API_BASE_URL=/api/v1
 ### 4. Start the API server
 
 ```bash
-node server.cjs
+npm run dev:api
 ```
 
-The REST API is now running at `http://localhost:3001/api/v1`.
+The REST API will be running at `http://localhost:3001/api/v1`.
 
 ### 5. Start the frontend dev server
 
@@ -175,17 +196,21 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-> The Vite dev server proxies all `/api` requests to `http://localhost:3001`, so no CORS configuration is needed during local development.
+> **Proxy note:** The Vite dev server proxies all `/api` requests to `http://localhost:3001`, so no manual CORS configuration is needed during local development.
 
 ---
 
 ## Environment Variables
 
-| Variable | Description | Example |
+| Variable | Description | Default (dev) |
 |---|---|---|
-| `VITE_API_BASE_URL` | Base URL for all API calls | `/api/v1` (dev) or `https://your-api.up.railway.app/api/v1` (prod) |
+| `VITE_API_BASE_URL` | Base URL for all RTK Query API calls | `/api/v1` |
 
-Create a `.env` file at the project root (see `.env.example`). In production, configure this variable in your Vercel project settings under **Environment Variables**.
+In **production**, set this to your Railway deployment URL inside your Vercel project's **Environment Variables** settings:
+
+```
+VITE_API_BASE_URL=https://your-project.up.railway.app/api/v1
+```
 
 ---
 
@@ -193,29 +218,35 @@ Create a `.env` file at the project root (see `.env.example`). In production, co
 
 ```bash
 # Start the backend REST API on port 3001
-node server.cjs
+npm run dev:api
 
 # Start the Vite frontend dev server on port 5173
 npm run dev
 
-# TypeScript type-check (no output emitted)
+# Run both the API and frontend concurrently
+#   (open two terminals and run dev:api + dev separately)
+
+# TypeScript type-check without emitting output
 npx tsc --noEmit
 
-# Production build — runs tsc then Vite bundle
+# Production build — type-checks then bundles with Vite
 npm run build
 
 # Preview the production bundle locally
 npm run preview
 
-# Run ESLint across the codebase
+# Run ESLint across the entire codebase
 npm run lint
+
+# Start the API in production mode (used by Railway)
+npm start
 ```
 
 ---
 
 ## API Endpoints
 
-The backend is a dependency-free Node.js HTTP server (`server.cjs`) backed by `db.json`. It requires no build step and runs identically in development and on Railway.
+The backend is a dependency-free Node.js HTTP server (`server.cjs`) backed by `db.json`. It requires no build step and runs identically in local development and on Railway.
 
 **Base URL (local):** `http://localhost:3001/api/v1`
 
@@ -229,7 +260,7 @@ The backend is a dependency-free Node.js HTTP server (`server.cjs`) backed by `d
 | `PUT` | `/flights/:id` | Replace a flight record |
 | `DELETE` | `/flights/:id` | Remove a flight |
 
-#### Flight object schema
+#### Flight schema
 
 ```json
 {
@@ -245,7 +276,9 @@ The backend is a dependency-free Node.js HTTP server (`server.cjs`) backed by `d
 }
 ```
 
-`status` — one of: `"On Time"` `"Delayed"` `"Boarding"` `"Cancelled"`
+`status` must be one of: `"On Time"` · `"Delayed"` · `"Boarding"` · `"Cancelled"`
+
+---
 
 ### Aircraft
 
@@ -253,7 +286,7 @@ The backend is a dependency-free Node.js HTTP server (`server.cjs`) backed by `d
 |---|---|---|
 | `GET` | `/aircraft` | List all aircraft in the fleet |
 
-#### Aircraft object schema
+#### Aircraft schema
 
 ```json
 {
@@ -267,21 +300,36 @@ The backend is a dependency-free Node.js HTTP server (`server.cjs`) backed by `d
 }
 ```
 
-`status` — one of: `"Active"` `"Maintenance"` `"Retired"`
+`status` must be one of: `"Active"` · `"Maintenance"` · `"Retired"`
 
 ---
 
-## Deployment
-
-### Architecture
+## Deployment Architecture
 
 ```
-Browser ──► Vercel (React SPA) ──► Railway (Node.js REST API) ──► db.json
+User Browser
+    │
+    ▼
+┌─────────────────────┐
+│   Vercel (CDN/Edge) │  ← React SPA (static build)
+│   vercel.json SPA   │
+│   rewrite rule      │
+└────────┬────────────┘
+         │ HTTPS — VITE_API_BASE_URL
+         ▼
+┌─────────────────────┐
+│  Railway (Node.js)  │  ← server.cjs REST API
+│  nixpacks.toml      │
+│  node server.cjs    │
+└────────┬────────────┘
+         │ fs read/write
+         ▼
+      db.json
 ```
 
 ### Frontend — Vercel
 
-The React app is deployed as a static SPA on Vercel. `vercel.json` rewrites all routes to `index.html` to support client-side navigation:
+The React app is deployed as a static SPA. `vercel.json` rewrites all routes to `index.html` to support client-side navigation:
 
 ```json
 {
@@ -296,11 +344,11 @@ The React app is deployed as a static SPA on Vercel. `vercel.json` rewrites all 
 | Framework Preset | Vite |
 | Build Command | `npm run build` |
 | Output Directory | `dist` |
-| Environment Variable | `VITE_API_BASE_URL` = your Railway URL |
+| Environment Variable | `VITE_API_BASE_URL` → Railway URL |
 
 ### Backend — Railway
 
-The API server deploys on Railway via `nixpacks.toml`. Railway injects `PORT` automatically; no build step is needed.
+The API server deploys on Railway via `nixpacks.toml`. Railway injects `PORT` automatically; no build step is required.
 
 ```toml
 [phases.setup]
@@ -313,46 +361,53 @@ cmds = []
 cmd = "node server.cjs"
 ```
 
-Once deployed, copy the Railway public URL and set it as `VITE_API_BASE_URL` in your Vercel environment variables:
+**Deploy steps:**
 
-```
-https://your-project.up.railway.app/api/v1
-```
+1. Push to GitHub — Railway auto-deploys from the connected repo
+2. Copy the Railway public URL (e.g. `https://your-project.up.railway.app`)
+3. In Vercel, set `VITE_API_BASE_URL` = `https://your-project.up.railway.app/api/v1`
+4. Trigger a Vercel redeploy to pick up the new environment variable
 
 ---
 
 ## Screenshots
 
-> _Add screenshots after deployment._
+> _Add screenshots after deployment. Suggested tool: [Screenzy](https://screenzy.io) or browser DevTools device toolbar._
 
 | Page | Preview |
 |---|---|
-| Home / Dashboard | _(add screenshot)_ |
-| Flights List | _(add screenshot)_ |
-| Flight Details | _(add screenshot)_ |
-| Add / Edit Flight | _(add screenshot)_ |
-| Fleet Registry | _(add screenshot)_ |
+| Home / Dashboard | _(screenshot)_ |
+| Flights List | _(screenshot)_ |
+| Flight Detail | _(screenshot)_ |
+| Add / Edit Flight Form | _(screenshot)_ |
+| Fleet Registry | _(screenshot)_ |
 
 ---
 
 ## Future Improvements
 
 - **Authentication** — JWT-based login with role-protected routes for write operations
-- **Pagination** — server-side pagination for large flight datasets
+- **Pagination** — server-side cursor pagination for large flight datasets
 - **Real-time updates** — WebSocket or SSE for live flight status push
 - **Aircraft CRUD** — add, edit, and retire aircraft directly from the fleet view
 - **Date-aware scheduling** — full date + time fields with timezone support
 - **Optimistic updates** — RTK Query `onQueryStarted` for instant UI feedback before server confirmation
-- **Unit & integration tests** — Vitest + React Testing Library coverage for form validation and selectors
+- **Unit & integration tests** — Vitest + React Testing Library coverage for form validation and RTK Query selectors
+- **Dark mode** — theme toggle persisted to `localStorage` via `uiSlice`
 
 ---
 
 ## Author
 
 **Yasatsawin Pukdeewong**
+
 - GitHub: [@Yasatsawin](https://github.com/Yasatsawin)
-- Email: yasatsawin_p@cmu.ac.th
+- Email: [yasatsawin_p@cmu.ac.th](mailto:yasatsawin_p@cmu.ac.th)
 
 ---
 
-> Final project — React & Redux Toolkit course, Chiang Mai University.
+<div align="center">
+
+Final project — React & Redux Toolkit course · Chiang Mai University
+
+</div>
