@@ -111,7 +111,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ mode }) => {
   const [values, setValues] = useState<FormValues>(EMPTY_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Partial<Record<keyof FormValues, boolean>>>({});
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   /* Load existing data for edit mode */
   const {
@@ -177,6 +177,8 @@ const FlightForm: React.FC<FlightFormProps> = ({ mode }) => {
     setErrors(fieldErrors);
     if (Object.keys(fieldErrors).length > 0) return;
 
+    setSubmitError(null);
+
     const payload: FlightPayload = {
       flightNumber: values.flightNumber.trim().toUpperCase(),
       origin: values.origin.trim().toUpperCase(),
@@ -188,19 +190,16 @@ const FlightForm: React.FC<FlightFormProps> = ({ mode }) => {
       gate: values.gate.trim().toUpperCase(),
     };
 
-    if (mode === 'edit' && id) {
-      await updateFlight({ id, body: payload });
-    } else {
-      await createFlight(payload);
-      /* Reset form after successful create */
-      setValues(EMPTY_FORM);
-      setTouched({});
-      setErrors({});
+    try {
+      if (mode === 'edit' && id) {
+        await updateFlight({ id, body: payload }).unwrap();
+      } else {
+        await createFlight(payload).unwrap();
+      }
+      navigate('/flights');
+    } catch {
+      setSubmitError('Failed to save flight. Please check your connection and try again.');
     }
-
-    setSubmitSuccess(true);
-    setTimeout(() => setSubmitSuccess(false), 3000);
-    navigate('/flights');
   };
 
   /* Loading existing flight for edit */
@@ -390,10 +389,8 @@ const FlightForm: React.FC<FlightFormProps> = ({ mode }) => {
             <Button type="submit" variant="primary" loading={isSaving}>
               {mode === 'add' ? 'Schedule Flight' : 'Save Changes'}
             </Button>
-            {submitSuccess && (
-              <span className={styles.formSaveMsg}>
-                ✓ {mode === 'add' ? 'Flight scheduled!' : 'Changes saved!'}
-              </span>
+            {submitError && (
+              <span className={styles.formSubmitError}>{submitError}</span>
             )}
           </div>
         </form>

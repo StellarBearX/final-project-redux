@@ -407,3 +407,10 @@
   color: var(--color-status-ontime);
   animation: fadeIn var(--duration-fast) both;
 }
+
+.formSubmitError {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: #ff7b74;
+  animation: fadeIn var(--duration-fast) both;
+}

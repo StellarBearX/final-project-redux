@@ -126,6 +126,7 @@ const FlightsList: React.FC = () => {
           {STATUS_FILTERS.map((s) => (
             <button
               key={s}
+              type="button"
               className={[
                 styles.chip,
                 statusFilter === s ? styles.chipActive : '',

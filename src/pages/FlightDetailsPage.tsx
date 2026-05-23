@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useGetFlightByIdQuery } from '../features/flights/flightsApi';
 import StatusBadge from '../components/ui/StatusBadge';
 import Button from '../components/ui/Button';
@@ -30,9 +30,9 @@ const FlightDetailsPage: React.FC = () => {
   return (
     <div>
       <div className={styles.back}>
-        <Link to="/flights">
-          <Button variant="ghost" size="sm">← Back to Flights</Button>
-        </Link>
+        <Button type="button" variant="ghost" size="sm" onClick={() => navigate('/flights')}>
+          ← Back to Flights
+        </Button>
       </div>
 
       <div className={styles.card}>

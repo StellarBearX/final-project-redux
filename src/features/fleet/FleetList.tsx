@@ -87,7 +87,7 @@ const FleetList: React.FC = () => {
     return (
       <div className={styles.grid}>
         <div className={styles.errorWrap}>
-          <div className={styles.spinner} />
+          <div className={styles.stateIcon}>⚠</div>
           <div className={styles.errorTitle}>Unable to reach the fleet database</div>
           <p className={styles.errorMsg}>
             The aircraft registry could not be loaded. Please check your
