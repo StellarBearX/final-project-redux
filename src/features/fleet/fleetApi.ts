@@ -13,7 +13,7 @@ export interface Aircraft {
 export const fleetApi = createApi({
   reducerPath: 'fleetApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api/v1',
+    baseUrl: import.meta.env.VITE_API_BASE_URL,
   }),
   tagTypes: ['Aircraft'],
   endpoints: (builder) => ({

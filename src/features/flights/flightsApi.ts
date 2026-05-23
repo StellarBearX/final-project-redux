@@ -17,7 +17,7 @@ export type FlightPayload = Omit<Flight, 'id'>;
 export const flightsApi = createApi({
   reducerPath: 'flightsApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api/v1',
+    baseUrl: import.meta.env.VITE_API_BASE_URL,
   }),
   tagTypes: ['Flight'],
   endpoints: (builder) => ({
