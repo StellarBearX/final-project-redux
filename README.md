@@ -399,10 +399,13 @@ cmd = "node server.cjs"
 
 ## Author
 
-**Yasatsawin Pukdeewong**
+**Kunanan Wongsing**
 
-- GitHub: [@Yasatsawin](https://github.com/Yasatsawin)
-- Email: [yasatsawin_p@cmu.ac.th](mailto:yasatsawin_p@cmu.ac.th)
+- GitHub: [@StellarBearX](https://github.com/StellarBearX)
+
+**Yasatsawin Panyawai**
+
+- GitHub: [@YasatsawinP](https://github.com/YasatsawinP)
 
 ---
 
