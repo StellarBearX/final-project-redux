@@ -109,6 +109,17 @@
       "status": "On Time",
       "aircraftId": "HS-TGG",
       "gate": "B06"
+    },
+    {
+      "flightNumber": "NM752",
+      "origin": "NRT",
+      "destination": "HKG",
+      "departure": "08:00",
+      "arrival": "12:00",
+      "gate": "A01",
+      "status": "BOARDING",
+      "apiId": "v1",
+      "id": "tDxH5A8"
     }
   ],
   "aircraft": [

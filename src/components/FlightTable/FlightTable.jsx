@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import StatusPill from '../StatusPill/StatusPill';
 import styles from './FlightTable.module.css';
 
-const FlightTable = ({ flights, onEdit, onDelete }) => {
+const FlightTable = ({ flights, aircraftList = [], onEdit, onDelete }) => {
   return (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
@@ -33,6 +33,18 @@ const FlightTable = ({ flights, onEdit, onDelete }) => {
                   <Link to={`/flights/${flight.id}`} className={styles.flightLink}>
                     {flight.flightNumber}
                   </Link>
+                  {(() => {
+                    const plane = aircraftList.find(a => a.registration === flight.aircraftId || a.id === flight.aircraftId);
+                    return plane ? (
+                      <span className={styles.assignedPlane}>
+                        ✈ {plane.model} ({plane.registration})
+                      </span>
+                    ) : (
+                      <span className={styles.unassigned}>
+                        ✈ Unassigned
+                      </span>
+                    );
+                  })()}
                 </td>
 
                 {/* Route */}

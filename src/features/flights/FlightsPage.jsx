@@ -9,6 +9,7 @@ import {
   selectFilteredFlights, 
   selectFlightStats 
 } from './flightsSelectors';
+import { fetchFleet } from '../fleet/fleetSlice';
 import { openModal, closeModal } from '../ui/uiSlice';
 import FlightTable from '../../components/FlightTable/FlightTable';
 import FlightForm from '../../components/FlightForm/FlightForm';
@@ -25,14 +26,20 @@ const FlightsPage = () => {
   const status = useSelector((state) => state.flights.status);
   const error = useSelector((state) => state.flights.error);
   const currentFilter = useSelector((state) => state.flights.filter);
+  
+  const fleetItems = useSelector((state) => state.fleet.items);
+  const fleetStatus = useSelector((state) => state.fleet.status);
 
   // Modal UI State from Redux
   const { isModalOpen, editMode, editData } = useSelector((state) => state.ui);
 
-  // Load flights on mount
+  // Load flights and fleet on mount
   useEffect(() => {
     dispatch(fetchFlights());
-  }, [dispatch]);
+    if (fleetStatus === 'idle') {
+      dispatch(fetchFleet());
+    }
+  }, [dispatch, fleetStatus]);
 
   const handleEditClick = (flight) => {
     dispatch(openModal(flight));
@@ -117,6 +124,7 @@ const FlightsPage = () => {
           {status !== 'loading' && status !== 'failed' && (
             <FlightTable 
               flights={flights} 
+              aircraftList={fleetItems}
               onEdit={handleEditClick} 
               onDelete={handleDeleteClick} 
             />

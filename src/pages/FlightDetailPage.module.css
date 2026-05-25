@@ -205,7 +205,117 @@
   line-height: 1.5;
 }
 
+/* Assigned Aircraft Section */
+.aircraftSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-top: 1px solid rgba(30, 35, 48, 0.4);
+  padding-top: 32px;
+}
+
+.sectionSubTitle {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.aircraftCard {
+  background-color: var(--surface2);
+  border: 1px solid rgba(0, 212, 255, 0.06);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  transition: border-color 220ms ease;
+}
+
+.aircraftCard:hover {
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+.aircraftInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.planeIcon {
+  font-size: 1.5rem;
+  color: var(--accent);
+  background-color: rgba(0, 212, 255, 0.05);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.planeDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.planeModel {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.planeReg {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.viewSpecsBtn {
+  background: transparent;
+  border: 1px solid rgba(240, 242, 247, 0.12);
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 16px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.viewSpecsBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background-color: rgba(0, 212, 255, 0.03);
+}
+
+.aircraftUnassigned {
+  text-align: center;
+  padding: 24px;
+  color: var(--red);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  border: 1px dashed rgba(255, 59, 59, 0.2);
+  border-radius: var(--radius-md);
+  background-color: rgba(255, 59, 59, 0.02);
+}
+
 @media (max-width: 576px) {
+  .aircraftCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .viewSpecsBtn {
+    width: 100%;
+    text-align: center;
+  }
   .iataCode {
     font-size: 1.85rem;
   }
