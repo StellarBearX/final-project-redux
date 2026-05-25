@@ -1,32 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchFleet } from './fleetSlice';
-import { fetchFlights } from '../flights/flightsSlice';
+import React, { useState } from 'react';
+import { useGetFleetQuery } from './fleetApi';
+import { useGetFlightsQuery } from '../flights/flightsApi';
 import FleetCard from '../../components/FleetCard/FleetCard';
 import Spinner from '../../components/Spinner/Spinner';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import styles from './FleetPage.module.css';
 
 const FleetPage = () => {
-  const dispatch = useDispatch();
+  // ── RTK Query hooks ──────────────────────────────────────────────────────
+  const {
+    data: fleet = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useGetFleetQuery();
 
-  // State from Redux
-  const fleet = useSelector((state) => state.fleet.items);
-  const status = useSelector((state) => state.fleet.status);
-  const error = useSelector((state) => state.fleet.error);
-
-  const flights = useSelector((state) => state.flights.items);
-  const flightsStatus = useSelector((state) => state.flights.status);
+  const { data: flights = [] } = useGetFlightsQuery();
 
   // Local Filter state
   const [activeFilter, setActiveFilter] = useState('ALL'); // ALL | ACTIVE | MAINTENANCE | RETIRED
-
-  useEffect(() => {
-    dispatch(fetchFleet());
-    if (flightsStatus === 'idle') {
-      dispatch(fetchFlights());
-    }
-  }, [dispatch, flightsStatus]);
 
   // Filtered fleet list
   const filteredFleet = fleet.filter((aircraft) => {
@@ -60,14 +53,14 @@ const FleetPage = () => {
 
         {/* Dynamic Telemetry Rendering */}
         <section className={styles.content}>
-          {status === 'loading' && <Spinner />}
-          {status === 'failed' && (
-            <ErrorMessage 
-              message={error} 
-              onRetry={() => dispatch(fetchFleet())} 
+          {isLoading && <Spinner />}
+          {isError && (
+            <ErrorMessage
+              message={error?.data?.error ?? error?.error ?? 'Failed to load fleet registry'}
+              onRetry={refetch}
             />
           )}
-          {status !== 'loading' && status !== 'failed' && (
+          {!isLoading && !isError && (
             <>
               {filteredFleet.length === 0 ? (
                 <div className={styles.empty}>
@@ -76,9 +69,9 @@ const FleetPage = () => {
               ) : (
                 <div className={styles.grid}>
                   {filteredFleet.map((aircraft) => (
-                    <FleetCard 
-                      key={aircraft.id || aircraft.registration} 
-                      aircraft={aircraft} 
+                    <FleetCard
+                      key={aircraft.id || aircraft.registration}
+                      aircraft={aircraft}
                       flights={flights}
                     />
                   ))}

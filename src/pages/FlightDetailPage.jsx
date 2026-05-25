@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchFlightById, clearSelectedFlight } from '../features/flights/flightsSlice';
-import { fetchFleet } from '../features/fleet/fleetSlice';
+import { useGetFlightByIdQuery } from '../features/flights/flightsApi';
+import { useGetFleetQuery } from '../features/fleet/fleetApi';
 import StatusPill from '../components/StatusPill/StatusPill';
 import Spinner from '../components/Spinner/Spinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
@@ -11,31 +10,24 @@ import styles from './FlightDetailPage.module.css';
 const FlightDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  const flight = useSelector((state) => state.flights.selectedFlight);
-  const status = useSelector((state) => state.flights.status);
-  const error = useSelector((state) => state.flights.error);
+  // ── RTK Query hooks ──────────────────────────────────────────────────────
+  const {
+    data: flight,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useGetFlightByIdQuery(id, { skip: !id });
 
-  const aircraftList = useSelector((state) => state.fleet.items);
-  const fleetStatus = useSelector((state) => state.fleet.status);
+  const { data: aircraftList = [] } = useGetFleetQuery();
 
-  useEffect(() => {
-    if (id) {
-      dispatch(fetchFlightById(id));
-    }
-    if (fleetStatus === 'idle') {
-      dispatch(fetchFleet());
-    }
-    return () => {
-      dispatch(clearSelectedFlight());
-    };
-  }, [dispatch, id, fleetStatus]);
-
-  // Find the assigned aircraft details!
-  const assignedAircraft = flight ? aircraftList.find(
-    (a) => a.registration === flight.aircraftId || a.id === flight.aircraftId
-  ) : null;
+  // Find the assigned aircraft details
+  const assignedAircraft = flight
+    ? aircraftList.find(
+        (a) => a.registration === flight.aircraftId || a.id === flight.aircraftId
+      )
+    : null;
 
   return (
     <main className={styles.main}>
@@ -46,15 +38,15 @@ const FlightDetailPage = () => {
         </button>
 
         {/* Dynamic State Rendering */}
-        {status === 'loading' && <Spinner />}
-        {status === 'failed' && (
-          <ErrorMessage 
-            message={error} 
-            onRetry={() => dispatch(fetchFlightById(id))} 
+        {isLoading && <Spinner />}
+        {isError && (
+          <ErrorMessage
+            message={error?.data?.error ?? error?.error ?? 'Failed to load flight details'}
+            onRetry={refetch}
           />
         )}
 
-        {status !== 'loading' && status !== 'failed' && flight && (
+        {!isLoading && !isError && flight && (
           <article className={styles.telemetryCard}>
             {/* Header section with registry & status */}
             <div className={styles.cardHeader}>
@@ -71,7 +63,7 @@ const FlightDetailPage = () => {
                 <span className={styles.iataCode}>{flight.origin}</span>
                 <span className={styles.stationLabel}>Origin Port</span>
               </div>
-              
+
               <div className={styles.connector}>
                 <div className={styles.line} />
                 <div className={styles.planeMark}>✈</div>
@@ -88,12 +80,12 @@ const FlightDetailPage = () => {
             <div className={styles.detailsGrid}>
               <div className={styles.detailBlock}>
                 <span className={styles.detailLabel}>Departure Telemetry</span>
-                <span className={styles.detailVal}>{flight.departure || flight.departureTime || '—'}</span>
+                <span className={styles.detailVal}>{flight.departure ?? '—'}</span>
               </div>
 
               <div className={styles.detailBlock}>
                 <span className={styles.detailLabel}>Arrival Telemetry</span>
-                <span className={styles.detailVal}>{flight.arrival || flight.arrivalTime || '—'}</span>
+                <span className={styles.detailVal}>{flight.arrival ?? '—'}</span>
               </div>
 
               <div className={styles.detailBlock}>
@@ -115,12 +107,16 @@ const FlightDetailPage = () => {
                   <div className={styles.aircraftInfo}>
                     <div className={styles.planeIcon}>✈</div>
                     <div className={styles.planeDetails}>
-                      <span className={styles.planeModel}>{assignedAircraft.manufacturer} {assignedAircraft.model}</span>
-                      <span className={styles.planeReg}>{assignedAircraft.registration} • {assignedAircraft.capacity} PAX (Max Capacity)</span>
+                      <span className={styles.planeModel}>
+                        {assignedAircraft.manufacturer} {assignedAircraft.model}
+                      </span>
+                      <span className={styles.planeReg}>
+                        {assignedAircraft.registration} • {assignedAircraft.capacity} PAX (Max Capacity)
+                      </span>
                     </div>
                   </div>
-                  <button 
-                    onClick={() => navigate('/fleet')} 
+                  <button
+                    onClick={() => navigate('/fleet')}
                     className={styles.viewSpecsBtn}
                   >
                     View Fleet Registry ➔
@@ -137,7 +133,8 @@ const FlightDetailPage = () => {
             <div className={styles.alertNote}>
               <span className={styles.noteIndicator}>●</span>
               <p className={styles.noteText}>
-                Active tracking. All values are synced live with air traffic controls and represent standard local times.
+                Active tracking. All values are synced live with air traffic controls and represent
+                standard local times.
               </p>
             </div>
           </article>

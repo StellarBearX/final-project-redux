@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addFlight, updateFlight } from '../../features/flights/flightsSlice';
-import { fetchFleet } from '../../features/fleet/fleetSlice';
+import { useSelector } from 'react-redux';
+import { useCreateFlightMutation, useUpdateFlightMutation, useGetFlightsQuery } from '../../features/flights/flightsApi';
+import { useGetFleetQuery } from '../../features/fleet/fleetApi';
 import styles from './FlightForm.module.css';
 
 // Popular international hubs for easy dropdown selection
@@ -15,20 +15,20 @@ const AIRPORTS = [
   { code: 'HKG', name: 'Hong Kong International' },
   { code: 'LAX', name: 'Los Angeles International' },
   { code: 'KUL', name: 'Kuala Lumpur International' },
-  { code: 'MNL', name: 'Manila Ninoy Aquino' }
+  { code: 'MNL', name: 'Manila Ninoy Aquino' },
 ];
 
 // Standard Gate Allocations
 const GATES = ['A01', 'A08', 'A12', 'B04', 'B06', 'B11', 'C03', 'C07', 'D02', 'D09'];
 
 const FlightForm = ({ initialData = null, onClose }) => {
-  const dispatch = useDispatch();
   const isEditMode = !!initialData;
 
-  // Redux Selectors
-  const aircraftList = useSelector((state) => state.fleet.items);
-  const fleetStatus = useSelector((state) => state.fleet.status);
-  const flights = useSelector((state) => state.flights.items);
+  // ── RTK Query hooks ──────────────────────────────────────────────────────
+  const { data: aircraftList = [] } = useGetFleetQuery();
+  const { data: flights = [] }      = useGetFlightsQuery();
+  const [createFlight] = useCreateFlightMutation();
+  const [updateFlight] = useUpdateFlightMutation();
 
   // Filter out Retired aircraft from scheduling
   const activeAircraft = aircraftList.filter(
@@ -48,41 +48,34 @@ const FlightForm = ({ initialData = null, onClose }) => {
 
   const [errors, setErrors] = useState({});
 
-  // Dispatch fetchFleet on mount if idle
-  useEffect(() => {
-    if (fleetStatus === 'idle') {
-      dispatch(fetchFleet());
-    }
-  }, [dispatch, fleetStatus]);
-
+  // Populate form when editing, or seed defaults for new
   useEffect(() => {
     if (initialData) {
       setFormData({
         flightNumber: initialData.flightNumber || '',
-        origin: initialData.origin || 'BKK',
-        destination: initialData.destination || 'SIN',
-        departure: initialData.departure || initialData.departureTime || '08:00',
-        arrival: initialData.arrival || initialData.arrivalTime || '12:00',
-        gate: initialData.gate || 'A01',
-        status: initialData.status || 'ON_TIME',
-        aircraftId: initialData.aircraftId || '',
+        origin:       initialData.origin       || 'BKK',
+        destination:  initialData.destination  || 'SIN',
+        departure:    initialData.departure     || '08:00',
+        arrival:      initialData.arrival       || '12:00',
+        gate:         initialData.gate          || 'A01',
+        status:       initialData.status        || 'ON_TIME',
+        aircraftId:   initialData.aircraftId    || '',
       });
     } else {
-      // Auto-generate a random flight code on mount for seamless experience
       const defaultAircraft = activeAircraft.length > 0 ? activeAircraft[0].registration : '';
       setFormData({
         flightNumber: `NM${Math.floor(100 + Math.random() * 899)}`,
-        origin: 'BKK',
-        destination: 'SIN',
-        departure: '08:00',
-        arrival: '12:00',
-        gate: 'A01',
-        status: 'ON_TIME',
-        aircraftId: defaultAircraft,
+        origin:       'BKK',
+        destination:  'SIN',
+        departure:    '08:00',
+        arrival:      '12:00',
+        gate:         'A01',
+        status:       'ON_TIME',
+        aircraftId:   defaultAircraft,
       });
     }
     setErrors({});
-  }, [initialData, aircraftList]);
+  }, [initialData, aircraftList]);   // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -90,21 +83,18 @@ const FlightForm = ({ initialData = null, onClose }) => {
       ...prev,
       [name]: name === 'origin' || name === 'destination' ? value.toUpperCase() : value,
     }));
-    // Clear error for that field
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   // Instant code generator helper
   const handleRandomizeCode = () => {
     setFormData((prev) => ({
       ...prev,
-      flightNumber: `NM${Math.floor(100 + Math.random() * 899)}`
+      flightNumber: `NM${Math.floor(100 + Math.random() * 899)}`,
     }));
   };
 
-  // Helper to convert time "HH:MM" into total minutes of the day
+  // Helper: convert "HH:MM" → total minutes
   const timeToMinutes = (t) => {
     if (!t) return 0;
     const [h, m] = t.split(':').map(Number);
@@ -122,44 +112,31 @@ const FlightForm = ({ initialData = null, onClose }) => {
       newErrors.destination = 'Destination cannot match the origin airport.';
     }
 
-    if (!formData.departure) {
-      newErrors.departure = 'Departure time is required.';
-    }
-
-    if (!formData.arrival) {
-      newErrors.arrival = 'Arrival time is required.';
-    }
+    if (!formData.departure) newErrors.departure = 'Departure time is required.';
+    if (!formData.arrival)   newErrors.arrival   = 'Arrival time is required.';
 
     if (!formData.aircraftId) {
       newErrors.aircraftId = 'Please assign an active aircraft to this flight log.';
     } else {
-      // Verify if the assigned aircraft is under maintenance
       const selectedPlane = aircraftList.find((a) => a.registration === formData.aircraftId);
       if (selectedPlane && selectedPlane.status?.toUpperCase() === 'MAINTENANCE') {
         newErrors.aircraftId = `Warning: ${selectedPlane.registration} is currently under Maintenance. Grounded!`;
       } else {
-        // Time Overlap Check logic!
+        // Time Overlap Check
         const pStart = timeToMinutes(formData.departure);
-        let pEnd = timeToMinutes(formData.arrival);
-        if (pEnd <= pStart) pEnd += 24 * 60; // handle midnight rollover
+        let   pEnd   = timeToMinutes(formData.arrival);
+        if (pEnd <= pStart) pEnd += 24 * 60; // midnight rollover
 
         for (const f of flights) {
-          // Skip the flight currently being edited
           if (isEditMode && f.id === initialData.id) continue;
-
-          // If the aircraft matches
           if (f.aircraftId === formData.aircraftId) {
-            const fDep = f.departure || f.departureTime || '00:00';
-            const fArr = f.arrival || f.arrivalTime || '00:00';
+            const fStart = timeToMinutes(f.departure || '00:00');
+            let   fEnd   = timeToMinutes(f.arrival   || '00:00');
+            if (fEnd <= fStart) fEnd += 24 * 60;
 
-            const fStart = timeToMinutes(fDep);
-            let fEnd = timeToMinutes(fArr);
-            if (fEnd <= fStart) fEnd += 24 * 60; // handle midnight rollover
-
-            // Overlap equation: proposed starts before other ends, and proposed ends after other starts
             const isOverlapping = !(pEnd <= fStart || pStart >= fEnd);
             if (isOverlapping) {
-              newErrors.aircraftId = `Conflict: Assigned Aircraft already scheduled for Flight ${f.flightNumber} (${fDep} - ${fArr})!`;
+              newErrors.aircraftId = `Conflict: Assigned Aircraft already scheduled for Flight ${f.flightNumber} (${f.departure} - ${f.arrival})!`;
               break;
             }
           }
@@ -171,22 +148,16 @@ const FlightForm = ({ initialData = null, onClose }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // Standardize database fields
-    const submissionData = {
-      ...formData,
-      // Mirror old database schema properties for absolute compatibility!
-      departureTime: formData.departure,
-      arrivalTime: formData.arrival,
-    };
+    const submissionData = { ...formData };
 
     if (isEditMode) {
-      dispatch(updateFlight({ id: initialData.id, flightData: submissionData }));
+      await updateFlight({ id: initialData.id, flightData: submissionData });
     } else {
-      dispatch(addFlight(submissionData));
+      await createFlight(submissionData);
     }
     onClose();
   };
@@ -202,7 +173,7 @@ const FlightForm = ({ initialData = null, onClose }) => {
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
-          {/* Flight Number (Auto-populated with optional randomize trigger) */}
+          {/* Flight Number */}
           <div className={styles.field}>
             <label className={styles.label}>Flight Number</label>
             <div className={styles.inputGroup}>
@@ -214,9 +185,9 @@ const FlightForm = ({ initialData = null, onClose }) => {
                 onChange={handleChange}
                 className={`${styles.input} ${styles.inputMono}`}
               />
-              <button 
-                type="button" 
-                onClick={handleRandomizeCode} 
+              <button
+                type="button"
+                onClick={handleRandomizeCode}
                 className={styles.randomBtn}
                 title="Generate Random Flight Number"
               >
@@ -226,7 +197,7 @@ const FlightForm = ({ initialData = null, onClose }) => {
             {errors.flightNumber && <span className={styles.errorText}>{errors.flightNumber}</span>}
           </div>
 
-          {/* Aircraft assignment selection dropdown */}
+          {/* Aircraft assignment */}
           <div className={styles.field}>
             <label className={styles.label}>Assign Aircraft Fleet</label>
             <select
@@ -245,7 +216,7 @@ const FlightForm = ({ initialData = null, onClose }) => {
             {errors.aircraftId && <span className={styles.errorText}>{errors.aircraftId}</span>}
           </div>
 
-          {/* Route (Origin & Destination select options) */}
+          {/* Route */}
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>Origin Airport</label>
@@ -282,7 +253,7 @@ const FlightForm = ({ initialData = null, onClose }) => {
             </div>
           </div>
 
-          {/* Times (Native Time Pickers for amazing UX) */}
+          {/* Times */}
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>Departure Time</label>
@@ -310,7 +281,7 @@ const FlightForm = ({ initialData = null, onClose }) => {
             </div>
           </div>
 
-          {/* Gate & Status (Select list menus) */}
+          {/* Gate & Status */}
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>Gate Allocation</label>

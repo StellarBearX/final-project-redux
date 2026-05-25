@@ -1,16 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-  fetchFlights, 
-  deleteFlight, 
-  setFilter 
-} from './flightsSlice';
-import { 
-  selectFilteredFlights, 
-  selectFlightStats 
-} from './flightsSelectors';
-import { fetchFleet } from '../fleet/fleetSlice';
+import { setFilter } from './flightsSlice';
+import { useDeleteFlightMutation } from './flightsApi';
+import { useGetFleetQuery } from '../fleet/fleetApi';
+import { selectFilteredFlights, selectFlightStats } from './flightsSelectors';
 import { openModal, closeModal } from '../ui/uiSlice';
+import { useGetFlightsQuery } from './flightsApi';
 import FlightTable from '../../components/FlightTable/FlightTable';
 import FlightForm from '../../components/FlightForm/FlightForm';
 import Spinner from '../../components/Spinner/Spinner';
@@ -20,43 +15,28 @@ import styles from './FlightsPage.module.css';
 const FlightsPage = () => {
   const dispatch = useDispatch();
 
-  // State from Redux
-  const flights = useSelector(selectFilteredFlights);
-  const stats = useSelector(selectFlightStats);
-  const status = useSelector((state) => state.flights.status);
-  const error = useSelector((state) => state.flights.error);
-  const currentFilter = useSelector((state) => state.flights.filter);
-  
-  const fleetItems = useSelector((state) => state.fleet.items);
-  const fleetStatus = useSelector((state) => state.fleet.status);
+  // ── RTK Query hooks ──────────────────────────────────────────────────────
+  const { isLoading, isError, error, refetch } = useGetFlightsQuery();
+  const { data: fleetItems = [] } = useGetFleetQuery();
+  const [deleteFlight] = useDeleteFlightMutation();
 
-  // Modal UI State from Redux
+  // ── Memoised selectors (reads from RTK Query cache) ──────────────────────
+  const flights       = useSelector(selectFilteredFlights);
+  const stats         = useSelector(selectFlightStats);
+  const currentFilter = useSelector((state) => state.flights.filter);
+
+  // ── Modal UI state ───────────────────────────────────────────────────────
   const { isModalOpen, editMode, editData } = useSelector((state) => state.ui);
 
-  // Load flights and fleet on mount
-  useEffect(() => {
-    dispatch(fetchFlights());
-    if (fleetStatus === 'idle') {
-      dispatch(fetchFleet());
-    }
-  }, [dispatch, fleetStatus]);
-
-  const handleEditClick = (flight) => {
-    dispatch(openModal(flight));
-  };
+  // ── Handlers ─────────────────────────────────────────────────────────────
+  const handleEditClick   = (flight) => dispatch(openModal(flight));
+  const handleAddClick    = ()       => dispatch(openModal(null));
+  const handleCloseModal  = ()       => dispatch(closeModal());
 
   const handleDeleteClick = (id) => {
     if (window.confirm('Are you sure you want to decommission this flight route?')) {
-      dispatch(deleteFlight(id));
+      deleteFlight(id);
     }
-  };
-
-  const handleAddClick = () => {
-    dispatch(openModal(null));
-  };
-
-  const handleCloseModal = () => {
-    dispatch(closeModal());
   };
 
   return (
@@ -114,19 +94,19 @@ const FlightsPage = () => {
 
         {/* Conditional Telemetry Data Rendering */}
         <section className={styles.contentSection}>
-          {status === 'loading' && <Spinner />}
-          {status === 'failed' && (
-            <ErrorMessage 
-              message={error} 
-              onRetry={() => dispatch(fetchFlights())} 
+          {isLoading && <Spinner />}
+          {isError && (
+            <ErrorMessage
+              message={error?.error ?? error?.data?.error ?? 'Failed to load flights'}
+              onRetry={refetch}
             />
           )}
-          {status !== 'loading' && status !== 'failed' && (
-            <FlightTable 
-              flights={flights} 
+          {!isLoading && !isError && (
+            <FlightTable
+              flights={flights}
               aircraftList={fleetItems}
-              onEdit={handleEditClick} 
-              onDelete={handleDeleteClick} 
+              onEdit={handleEditClick}
+              onDelete={handleDeleteClick}
             />
           )}
         </section>
@@ -134,9 +114,9 @@ const FlightsPage = () => {
 
       {/* Flight Schedule/Edit Modal Form */}
       {isModalOpen && (
-        <FlightForm 
-          initialData={editMode ? editData : null} 
-          onClose={handleCloseModal} 
+        <FlightForm
+          initialData={editMode ? editData : null}
+          onClose={handleCloseModal}
         />
       )}
     </main>
