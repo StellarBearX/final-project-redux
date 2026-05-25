@@ -2,9 +2,9 @@
   width: 100%;
   background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   overflow-x: auto;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.2);
 }
 
 .table {
@@ -14,34 +14,40 @@
 }
 
 .headerRow {
-  background-color: rgba(7, 8, 12, 0.4);
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.02), transparent, rgba(0, 212, 255, 0.02));
   border-bottom: 1px solid var(--border);
 }
 
 .headerCell {
-  padding: 16px 24px;
-  font-size: 0.72rem;
-  font-weight: 600;
+  padding: 14px 24px;
+  font-size: 0.65rem;
+  font-weight: 700;
   text-transform: uppercase;
-  color: var(--muted);
-  letter-spacing: 0.1em;
-  font-family: var(--font-body);
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  font-family: var(--font-mono);
+  white-space: nowrap;
 }
 
 .bodyRow {
-  border-bottom: 1px solid rgba(30, 35, 48, 0.35);
-  transition: all 180ms ease;
+  border-bottom: 1px solid rgba(30, 35, 48, 0.3);
+  transition: all 250ms var(--ease-out);
+}
+
+.bodyRow:last-child {
+  border-bottom: none;
 }
 
 .bodyRow:hover {
-  background-color: rgba(0, 212, 255, 0.015);
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.02), rgba(0, 212, 255, 0.01), transparent);
 }
 
 .emptyCell {
-  padding: 64px 24px;
+  padding: 80px 24px;
   text-align: center;
   color: var(--muted);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
 }
 
 .codeCell {
@@ -52,18 +58,19 @@
 }
 
 .assignedPlane {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--muted);
   font-family: var(--font-mono);
   white-space: nowrap;
+  opacity: 0.8;
 }
 
 .unassigned {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--red);
   font-family: var(--font-mono);
   white-space: nowrap;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .flightLink {
@@ -71,37 +78,41 @@
   font-weight: 700;
   color: #ffffff;
   font-size: 0.88rem;
-  transition: color 180ms ease;
+  transition: all 200ms ease;
+  letter-spacing: 0.02em;
 }
 
 .flightLink:hover {
   color: var(--accent);
+  text-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
 }
 
 .routeCell {
   padding: 16px 24px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .iata {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.88rem;
   color: var(--text);
 }
 
 .arrow {
-  color: var(--muted);
-  font-size: 0.75rem;
+  color: var(--accent);
+  font-size: 0.7rem;
+  opacity: 0.5;
 }
 
 .timeCell {
   padding: 16px 24px;
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text);
+  letter-spacing: 0.02em;
 }
 
 .gateCell {
@@ -110,14 +121,15 @@
 
 .gateBadge {
   font-family: var(--font-mono);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  border-radius: var(--radius-sm);
-  padding: 2px 8px;
-  font-size: 0.72rem;
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  border-radius: 9999px;
+  padding: 3px 12px;
+  font-size: 0.68rem;
   color: var(--accent);
   font-weight: 700;
-  background: transparent;
+  background: rgba(0, 212, 255, 0.03);
   display: inline-block;
+  letter-spacing: 0.04em;
 }
 
 .statusCell {
@@ -130,41 +142,43 @@
 
 .actions {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   justify-content: flex-end;
 }
 
 .actionBtn {
   background: transparent;
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  font-size: 0.72rem;
-  font-weight: 600;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 6px 12px;
+  letter-spacing: 0.06em;
+  padding: 6px 16px;
   cursor: pointer;
-  transition: all 180ms ease;
+  transition: all 250ms ease;
 }
 
 .editBtn {
-  border-color: rgba(240, 242, 247, 0.12);
-  color: var(--text);
+  border-color: rgba(240, 242, 247, 0.08);
+  color: var(--muted);
 }
 
 .editBtn:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background-color: rgba(0, 212, 255, 0.03);
+  background-color: rgba(0, 212, 255, 0.04);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.08);
 }
 
 .deleteBtn {
-  border-color: rgba(255, 59, 59, 0.12);
-  color: var(--red);
+  border-color: rgba(255, 59, 59, 0.08);
+  color: rgba(255, 59, 59, 0.5);
 }
 
 .deleteBtn:hover {
   border-color: var(--red);
-  background-color: rgba(255, 59, 59, 0.05);
-  box-shadow: 0 0 8px rgba(255, 59, 59, 0.1);
+  color: var(--red);
+  background-color: rgba(255, 59, 59, 0.04);
+  box-shadow: 0 0 12px rgba(255, 59, 59, 0.1);
 }

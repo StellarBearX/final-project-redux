@@ -3,55 +3,54 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  padding: 64px 24px;
+  gap: 24px;
+  padding: 80px 24px;
 }
 
 .spinner {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
 }
 
 .ring {
   width: 100%;
   height: 100%;
-  border: 3px solid rgba(0, 212, 255, 0.08);
+  border: 2px solid rgba(0, 212, 255, 0.06);
   border-top-color: var(--accent);
+  border-right-color: rgba(0, 212, 255, 0.3);
   border-radius: 50%;
-  animation: spin 800ms linear infinite;
+  animation: spin 1000ms cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }
 
 .glow {
   position: absolute;
-  inset: -4px;
+  inset: -6px;
   border-radius: 50%;
-  box-shadow: 0 0 16px rgba(0, 212, 255, 0.15);
-  animation: pulse 1600ms ease-in-out infinite;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+  animation: pulse 2s ease-in-out infinite;
 }
 
 .label {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--muted);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  animation: labelBlink 2s ease-in-out infinite;
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes pulse {
-  0%, 100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
+  0%, 100% { opacity: 0.3; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes labelBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }

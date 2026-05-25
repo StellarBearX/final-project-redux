@@ -1,7 +1,7 @@
 .main {
   background-color: var(--bg);
   min-height: 100vh;
-  padding-top: 120px; /* offset fixed navbar */
+  padding-top: 120px;
   padding-bottom: 80px;
 }
 
@@ -12,7 +12,7 @@
   padding: 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 36px;
 }
 
 .header {
@@ -33,8 +33,20 @@
   font-size: 0.68rem;
   font-weight: 700;
   color: var(--accent);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kicker::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  border-radius: 2px;
 }
 
 .title {
@@ -46,31 +58,44 @@
 }
 
 .addBtn {
-  background-color: var(--accent);
-  border: 1px solid var(--accent);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
   color: var(--bg);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 12px 24px;
+  letter-spacing: 0.1em;
+  padding: 12px 28px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 250ms ease;
+  transition: all 300ms var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+
+.addBtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15));
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.addBtn:hover::before {
+  opacity: 1;
 }
 
 .addBtn:hover {
-  background-color: #33ddff;
-  border-color: #33ddff;
-  box-shadow: 0 0 16px rgba(0, 212, 255, 0.25);
-  transform: translateY(-1px);
+  box-shadow: 0 4px 24px rgba(0, 212, 255, 0.35);
+  transform: translateY(-2px);
 }
 
 /* Stats Grid */
 .statsSection {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 20px;
+  gap: 16px;
 }
 
 .statCard {
@@ -80,16 +105,34 @@
   padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 300ms var(--ease-out);
+}
+
+.statCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--border2), transparent);
+}
+
+.statCard:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .statLabel {
-  font-size: 0.68rem;
-  font-weight: 600;
+  font-size: 0.65rem;
+  font-weight: 700;
   text-transform: uppercase;
   color: var(--muted);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 
 .statValue {
@@ -97,23 +140,20 @@
   font-size: 1.85rem;
   font-weight: 700;
   color: #ffffff;
+  line-height: 1;
 }
 
-.statGreen .statValue {
-  color: var(--green);
-}
+.statGreen::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+.statGreen .statValue { color: var(--green); text-shadow: 0 0 20px rgba(0, 255, 156, 0.15); }
 
-.statCyan .statValue {
-  color: var(--accent);
-}
+.statCyan::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.statCyan .statValue { color: var(--accent); text-shadow: 0 0 20px rgba(0, 212, 255, 0.15); }
 
-.statAmber .statValue {
-  color: var(--amber);
-}
+.statAmber::before { background: linear-gradient(90deg, transparent, var(--amber), transparent); }
+.statAmber .statValue { color: var(--amber); text-shadow: 0 0 20px rgba(255, 184, 0, 0.15); }
 
-.statRed .statValue {
-  color: var(--red);
-}
+.statRed::before { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+.statRed .statValue { color: var(--red); text-shadow: 0 0 20px rgba(255, 59, 59, 0.15); }
 
 /* Filter Chips Bar */
 .filterSection {
@@ -131,26 +171,27 @@
   background-color: transparent;
   border: 1px solid var(--border);
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  letter-spacing: 0.06em;
+  padding: 8px 18px;
+  border-radius: 9999px;
   cursor: pointer;
-  transition: all 180ms ease;
+  transition: all 250ms ease;
 }
 
 .filterChip:hover {
   border-color: rgba(0, 212, 255, 0.3);
-  color: var(--accent);
+  color: var(--text);
+  background-color: rgba(0, 212, 255, 0.02);
 }
 
 .activeChip {
-  background-color: rgba(0, 212, 255, 0.06) !important;
+  background-color: rgba(0, 212, 255, 0.08) !important;
   border-color: var(--accent) !important;
   color: var(--accent) !important;
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.1), inset 0 0 12px rgba(0, 212, 255, 0.03);
 }
 
 /* Content Area */
