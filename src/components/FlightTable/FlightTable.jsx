@@ -56,12 +56,12 @@ const FlightTable = ({ flights, aircraftList = [], onEdit, onDelete }) => {
 
                 {/* Departure Time */}
                 <td className={styles.timeCell}>
-                  {flight.departure}
+                  {flight.departure || flight.departureTime || '—'}
                 </td>
 
                 {/* Arrival Time */}
                 <td className={styles.timeCell}>
-                  {flight.arrival}
+                  {flight.arrival || flight.arrivalTime || '—'}
                 </td>
 
                 {/* Gate Badge */}

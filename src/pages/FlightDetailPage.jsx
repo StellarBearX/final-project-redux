@@ -88,12 +88,12 @@ const FlightDetailPage = () => {
             <div className={styles.detailsGrid}>
               <div className={styles.detailBlock}>
                 <span className={styles.detailLabel}>Departure Telemetry</span>
-                <span className={styles.detailVal}>{flight.departure}</span>
+                <span className={styles.detailVal}>{flight.departure || flight.departureTime || '—'}</span>
               </div>
 
               <div className={styles.detailBlock}>
                 <span className={styles.detailLabel}>Arrival Telemetry</span>
-                <span className={styles.detailVal}>{flight.arrival}</span>
+                <span className={styles.detailVal}>{flight.arrival || flight.arrivalTime || '—'}</span>
               </div>
 
               <div className={styles.detailBlock}>

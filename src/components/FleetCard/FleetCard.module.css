@@ -109,6 +109,10 @@
   font-family: var(--font-mono);
 }
 
+.specValAccent {
+  color: var(--accent);
+}
+
 .utilisation {
   display: flex;
   flex-direction: column;

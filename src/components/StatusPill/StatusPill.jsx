@@ -2,28 +2,24 @@ import React from 'react';
 import styles from './StatusPill.module.css';
 
 const StatusPill = ({ status }) => {
-  const normalizedStatus = status ? status.toUpperCase() : 'UNKNOWN';
+  const raw = status ? status.toUpperCase().trim() : 'UNKNOWN';
 
   const getStyleClass = () => {
-    switch (normalizedStatus) {
-      case 'ON_TIME':
-      case 'ACTIVE':
-        return styles.onTime;
-      case 'DELAYED':
-      case 'MAINTENANCE':
-        return styles.delayed;
-      case 'CANCELLED':
-      case 'RETIRED':
-        return styles.cancelled;
-      case 'BOARDING':
-        return styles.boarding;
-      default:
-        return styles.unknown;
-    }
+    if (raw.includes('ON_TIME') || raw.includes('ON TIME') || raw === 'ACTIVE' || raw.includes('CRUISING'))
+      return styles.onTime;
+    if (raw.includes('DELAYED') || raw.includes('MAINTENANCE'))
+      return styles.delayed;
+    if (raw.includes('CANCELLED') || raw.includes('RETIRED'))
+      return styles.cancelled;
+    if (raw.includes('BOARDING'))
+      return styles.boarding;
+    if (raw.includes('STANDBY'))
+      return styles.standby;
+    return styles.unknown;
   };
 
   const getFormattedLabel = () => {
-    return normalizedStatus.replace('_', ' ');
+    return raw.replace(/_/g, ' ');
   };
 
   return (
