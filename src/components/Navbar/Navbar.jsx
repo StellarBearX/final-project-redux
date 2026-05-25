@@ -25,7 +25,7 @@ const Navbar = () => {
     <header className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
         <Link to="/" className={styles.brand}>
-          <span className={styles.logoMark}>N</span>
+          <img src="/nimbus_logo.png" alt="Nimbus System Logo" className={styles.logoImg} />
           <span className={styles.brandName}>NIMBUS</span>
         </Link>
 

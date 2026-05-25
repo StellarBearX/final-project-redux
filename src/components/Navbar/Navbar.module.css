@@ -37,18 +37,16 @@
   text-decoration: none;
 }
 
-.logoMark {
-  width: 32px;
-  height: 32px;
-  border: 2px solid var(--accent);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  color: var(--accent);
-  font-size: 0.95rem;
+.logoImg {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.45));
+  transition: transform 300ms ease;
+}
+
+.brand:hover .logoImg {
+  transform: rotate(-6deg) scale(1.08);
 }
 
 .brandName {
