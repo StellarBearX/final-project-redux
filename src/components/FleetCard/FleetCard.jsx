@@ -2,19 +2,19 @@ import React from 'react';
 import StatusPill from '../StatusPill/StatusPill';
 import styles from './FleetCard.module.css';
 
-// Precise model-to-photography mapping to ensure fleet pictures are authentic
+// Spectacular and dynamic airliner action photography mapping
 const MODEL_IMAGES = {
-  'Boeing 777-300ER': 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=600',
-  'Airbus A350-900': 'https://images.unsplash.com/photo-1570710891163-6d3b5c47248b?w=600',
-  'Boeing 787-9 Dreamliner': 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600',
-  'Airbus A380-800': 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=600',
-  'Boeing 777-200LR': 'https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?w=600',
-  'Airbus A330-300': 'https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=600',
-  'Boeing 787-8 Dreamliner': 'https://images.unsplash.com/photo-1518973656114-1189c44569a9?w=600',
-  'Airbus A320neo': 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=600'
+  'Boeing 777-300ER': 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=800',
+  'Airbus A350-900': 'https://images.unsplash.com/photo-1519074002996-a69e7ac46a42?w=800',
+  'Boeing 787-9 Dreamliner': 'https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?w=800',
+  'Airbus A380-800': 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=800',
+  'Boeing 777-200LR': 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=800',
+  'Airbus A330-300': 'https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=800',
+  'Boeing 787-8 Dreamliner': 'https://images.unsplash.com/photo-1483450388369-9ed95738483c?w=800',
+  'Airbus A320neo': 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800'
 };
 
-const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=600';
+const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=800';
 
 const FleetCard = ({ aircraft }) => {
   const getProgressColor = (status) => {
