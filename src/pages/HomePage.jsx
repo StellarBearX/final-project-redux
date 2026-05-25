@@ -49,28 +49,23 @@ const HomePage = () => {
     }
   }, [flightsStatus, dispatch]);
 
-  // Search Widget State
-  const [searchTab, setSearchTab] = useState('roundTrip'); // roundTrip | oneWay | multiCity
-  const [searchFields, setSearchFields] = useState({
-    from: '',
-    to: '',
-    date: '',
-    passengers: '1'
+  // HUD Telemetry Search State
+  const [hudSearch, setHudSearch] = useState('');
+  const [hudStatus, setHudStatus] = useState('ALL');
+
+  const filteredHudFlights = flights.filter(flight => {
+    const query = hudSearch.toLowerCase().trim();
+    if (!query && hudStatus === 'ALL') return true;
+    
+    const matchesSearch = !query || 
+      flight.flightNumber?.toLowerCase().includes(query) ||
+      flight.origin?.toLowerCase().includes(query) ||
+      flight.destination?.toLowerCase().includes(query) ||
+      flight.gate?.toLowerCase().includes(query);
+      
+    const matchesStatus = hudStatus === 'ALL' || flight.status?.toUpperCase().replace(' ', '_') === hudStatus;
+    return matchesSearch && matchesStatus;
   });
-
-  const handleSearchChange = (e) => {
-    const { name, value } = e.target;
-    setSearchFields(prev => ({
-      ...prev,
-      [name]: name === 'from' || name === 'to' ? value.toUpperCase() : value
-    }));
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (!searchFields.from || !searchFields.to) return;
-    navigate('/flights');
-  };
 
   return (
     <div className={styles.wrapper}>
@@ -246,92 +241,80 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ── Section 5: Search Widget ── */}
+      {/* ── Section 5: Telemetry Search Widget ── */}
       <section ref={searchRef} className={`${styles.searchSection} ${searchVisible ? styles.revealed : ''}`}>
         <div className={styles.container}>
           <div className={styles.searchCard}>
-            {/* Tabs */}
-            <div className={styles.searchTabs}>
-              <button 
-                onClick={() => setSearchTab('roundTrip')}
-                className={`${styles.tabBtn} ${searchTab === 'roundTrip' ? styles.activeTab : ''}`}
-              >
-                Round Trip
-              </button>
-              <button 
-                onClick={() => setSearchTab('oneWay')}
-                className={`${styles.tabBtn} ${searchTab === 'oneWay' ? styles.activeTab : ''}`}
-              >
-                One Way
-              </button>
-              <button 
-                onClick={() => setSearchTab('multiCity')}
-                className={`${styles.tabBtn} ${searchTab === 'multiCity' ? styles.activeTab : ''}`}
-              >
-                Multi-City
-              </button>
+            <div className={styles.sectionHeader}>
+              <span className={styles.kicker}>SYSTEM TELEMETRY HUD</span>
+              <h2 className={styles.sectionTitle}>Real-time Flight Lookup Console</h2>
+              <p className={styles.hudSubDesc}>
+                Instantly query active airspace routes, gate allocations, and flight status records across the entire global network.
+              </p>
             </div>
 
             {/* Controlled Search Form */}
-            <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
+            <div className={styles.searchForm}>
               <div className={styles.formGrid}>
                 <div className={styles.inputField}>
-                  <label className={styles.inputLabel}>Origin</label>
+                  <label className={styles.inputLabel}>Telemetry Query</label>
                   <input 
                     type="text" 
-                    name="from"
-                    placeholder="e.g. BKK"
-                    maxLength={3}
-                    value={searchFields.from}
-                    onChange={handleSearchChange}
+                    placeholder="Enter Flight #, Airport (e.g. BKK), or Gate..."
+                    value={hudSearch}
+                    onChange={(e) => setHudSearch(e.target.value)}
                     className={styles.formInput}
-                    required
                   />
                 </div>
                 <div className={styles.inputField}>
-                  <label className={styles.inputLabel}>Destination</label>
-                  <input 
-                    type="text" 
-                    name="to"
-                    placeholder="e.g. LHR"
-                    maxLength={3}
-                    value={searchFields.to}
-                    onChange={handleSearchChange}
-                    className={styles.formInput}
-                    required
-                  />
-                </div>
-                <div className={styles.inputField}>
-                  <label className={styles.inputLabel}>Departure Date</label>
-                  <input 
-                    type="date" 
-                    name="date"
-                    value={searchFields.date}
-                    onChange={handleSearchChange}
-                    className={styles.formInput}
-                    required
-                  />
-                </div>
-                <div className={styles.inputField}>
-                  <label className={styles.inputLabel}>Passengers</label>
+                  <label className={styles.inputLabel}>Operations Status</label>
                   <select 
-                    name="passengers"
-                    value={searchFields.passengers}
-                    onChange={handleSearchChange}
+                    value={hudStatus}
+                    onChange={(e) => setHudStatus(e.target.value)}
                     className={styles.formSelect}
                   >
-                    <option value="1">1 Passenger</option>
-                    <option value="2">2 Passengers</option>
-                    <option value="3">3 Passengers</option>
-                    <option value="4">4+ Passengers</option>
+                    <option value="ALL">All Operations</option>
+                    <option value="ON_TIME">On Time</option>
+                    <option value="BOARDING">Boarding</option>
+                    <option value="DELAYED">Delayed</option>
+                    <option value="CANCELLED">Cancelled</option>
                   </select>
                 </div>
               </div>
 
-              <button type="submit" className={styles.searchSubmitBtn}>
-                Search Aero Flights ➔
-              </button>
-            </form>
+              {/* Dynamic HUD Search Results */}
+              <div className={styles.hudResults}>
+                {filteredHudFlights.length === 0 ? (
+                  <div className={styles.hudEmpty}>
+                    🛰️ NO ACTIVE TELEMETRY LOGS MATCHING QUERY
+                  </div>
+                ) : (
+                  <div className={styles.hudGrid}>
+                    {filteredHudFlights.slice(0, 4).map((flight) => (
+                      <div 
+                        key={`hud-${flight.id}`} 
+                        className={styles.hudCard}
+                        onClick={() => navigate(`/flights/${flight.id}`)}
+                      >
+                        <div className={styles.hudCardHeader}>
+                          <span className={styles.hudFlightNum}>{flight.flightNumber}</span>
+                          <span className={styles.hudGate}>Gate {flight.gate}</span>
+                        </div>
+                        <div className={styles.hudCardRoute}>
+                          <span>{flight.origin}</span>
+                          <span className={styles.hudRouteArrow}>➔</span>
+                          <span>{flight.destination}</span>
+                        </div>
+                        <div className={styles.hudCardFooter}>
+                          <span className={styles.hudTime}>{flight.departure} - {flight.arrival}</span>
+                          <span className={styles.hudActionBtn}>Open Logs ↗</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </section>

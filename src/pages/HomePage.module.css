@@ -392,44 +392,11 @@
   gap: 32px;
 }
 
-.searchTabs {
-  display: flex;
-  gap: 8px;
-  border-bottom: 1px solid rgba(30, 35, 48, 0.5);
-  padding-bottom: 12px;
-}
-
-.tabBtn {
-  background: transparent;
-  border: none;
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-transform: uppercase;
+.hudSubDesc {
+  font-size: 0.85rem;
   color: var(--muted);
-  letter-spacing: 0.08em;
-  padding: 6px 16px;
-  cursor: pointer;
-  transition: all 180ms ease;
-  position: relative;
-}
-
-.tabBtn:hover {
-  color: #ffffff;
-}
-
-.activeTab {
-  color: var(--accent) !important;
-}
-
-.activeTab::after {
-  content: '';
-  position: absolute;
-  bottom: -13px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
+  line-height: 1.5;
+  margin-top: -6px;
 }
 
 .searchForm {
@@ -440,8 +407,14 @@
 
 .formGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 2fr 1fr;
   gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .inputField {
@@ -483,26 +456,110 @@
   padding-right: 40px;
 }
 
-.searchSubmitBtn {
-  align-self: flex-end;
-  background-color: var(--accent);
-  border: 1px solid var(--accent);
-  color: var(--bg);
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 14px 32px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 250ms ease;
+/* ── HUD Telemetry Grid ── */
+.hudResults {
+  border-top: 1px solid rgba(30, 35, 48, 0.5);
+  padding-top: 24px;
 }
 
-.searchSubmitBtn:hover {
-  background-color: #33ddff;
-  border-color: #33ddff;
-  box-shadow: 0 0 16px rgba(0, 212, 255, 0.25);
-  transform: translateY(-1px);
+.hudEmpty {
+  text-align: center;
+  padding: 40px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  border: 1px dashed rgba(30, 35, 48, 0.6);
+  border-radius: var(--radius-md);
+  background-color: rgba(7, 8, 12, 0.2);
+}
+
+.hudGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.hudCard {
+  background-color: var(--surface2);
+  border: 1px solid rgba(0, 212, 255, 0.05);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.hudCard:hover {
+  border-color: rgba(0, 212, 255, 0.25);
+  background-color: rgba(0, 212, 255, 0.02);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.hudCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hudFlightNum {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #ffffff;
+}
+
+.hudGate {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.hudCardRoute {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.hudRouteArrow {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.hudCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.hudTime {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.hudActionBtn {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+  transition: opacity 180ms ease;
+}
+
+.hudCard:hover .hudActionBtn {
+  opacity: 1;
 }
 
 /* Scroll reveal opacity transitions */
