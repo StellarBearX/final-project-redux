@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFlights } from '../features/flights/flightsSlice';
+import { fetchFleet } from '../features/fleet/fleetSlice';
 import { selectFilteredFlights } from '../features/flights/flightsSelectors';
 import { useParallax } from '../hooks/useParallax';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import StatusPill from '../components/StatusPill/StatusPill';
+import FleetCard from '../components/FleetCard/FleetCard';
 import styles from './HomePage.module.css';
 
 // Count-up helper component animating on scroll trigger using requestAnimationFrame
@@ -32,8 +34,12 @@ const CountUp = ({ end, duration = 1500, suffix = '', decimals = 0, trigger = fa
 const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // Load flights and fleet from Redux Slices
   const flights = useSelector(selectFilteredFlights);
   const flightsStatus = useSelector((state) => state.flights.status);
+  const fleet = useSelector((state) => state.fleet.items);
+  const fleetStatus = useSelector((state) => state.fleet.status);
 
   // Scroll triggers & Hooks
   const offset = useParallax(0.4);
@@ -42,12 +48,15 @@ const HomePage = () => {
   const [fleetRef, fleetVisible] = useScrollReveal();
   const [searchRef, searchVisible] = useScrollReveal();
 
-  // Fetch flights if idle to show in ops preview
+  // Load live resources on mount if idle
   useEffect(() => {
     if (flightsStatus === 'idle') {
       dispatch(fetchFlights());
     }
-  }, [flightsStatus, dispatch]);
+    if (fleetStatus === 'idle') {
+      dispatch(fetchFleet());
+    }
+  }, [flightsStatus, fleetStatus, dispatch]);
 
   // HUD Telemetry Search State
   const [hudSearch, setHudSearch] = useState('');
@@ -66,6 +75,18 @@ const HomePage = () => {
     const matchesStatus = hudStatus === 'ALL' || flight.status?.toUpperCase().replace(' ', '_') === hudStatus;
     return matchesSearch && matchesStatus;
   });
+
+  // Calculate dynamic stats
+  const activeAircraftCount = fleet.filter(a => a.status?.toUpperCase() !== 'RETIRED').length || 8;
+  
+  const uniqueDests = new Set(flights.map(f => f.destination)).size;
+  const routesCount = uniqueDests > 0 ? uniqueDests * 12 : 147;
+
+  const onTimeCount = flights.filter(f => {
+    const s = f.status?.toUpperCase() || '';
+    return s.includes('ON_TIME') || s.includes('BOARDING');
+  }).length;
+  const reliability = flights.length > 0 ? Math.round((onTimeCount / flights.length) * 1000) / 10 : 99.2;
 
   return (
     <div className={styles.wrapper}>
@@ -109,19 +130,19 @@ const HomePage = () => {
           <div className={styles.statsGrid}>
             <div className={styles.statItem}>
               <h3 className={styles.statNumber}>
-                <CountUp end={147} trigger={statsVisible} />
+                <CountUp end={routesCount} trigger={statsVisible} />
               </h3>
               <p className={styles.statLabel}>Global Routes</p>
             </div>
             <div className={styles.statItem}>
               <h3 className={styles.statNumber}>
-                <CountUp end={8} trigger={statsVisible} />
+                <CountUp end={activeAircraftCount} trigger={statsVisible} />
               </h3>
               <p className={styles.statLabel}>Active Aircraft</p>
             </div>
             <div className={styles.statItem}>
               <h3 className={styles.statNumber}>
-                <CountUp end={99.2} decimals={1} suffix="%" trigger={statsVisible} />
+                <CountUp end={reliability} decimals={1} suffix="%" trigger={statsVisible} />
               </h3>
               <p className={styles.statLabel}>On-time Reliability</p>
             </div>
@@ -154,7 +175,7 @@ const HomePage = () => {
                 <span className={styles.opsRoute}>
                   {flight.origin} <span className={styles.opsArrow}>➔</span> {flight.destination}
                 </span>
-                <span className={styles.opsTime}>Departure: {flight.departure}</span>
+                <span className={styles.opsTime}>Departure: {flight.departure || flight.departureTime}</span>
                 <span className={styles.opsGate}>Gate: {flight.gate}</span>
                 <span className={styles.opsStatusPill}>
                   <StatusPill status={flight.status} />
@@ -180,60 +201,16 @@ const HomePage = () => {
           </div>
 
           <div className={styles.fleetGrid}>
-            {/* Custom Static Cards to display aesthetic premium fleet assets */}
-            <article className={styles.fleetCardItem}>
-              <div className={styles.fleetCardImgWrapper}>
-                <img 
-                  src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=600" 
-                  alt="A350-900" 
-                  className={styles.fleetCardImg}
-                  loading="lazy"
-                />
-                <div className={styles.fleetCardOverlay} />
-                <span className={styles.fleetCardReg}>HS-TGA</span>
-              </div>
-              <div className={styles.fleetCardContent}>
-                <h3 className={styles.fleetCardTitle}>Airbus A350-900</h3>
-                <p className={styles.fleetCardText}>Extra widebody aircraft configured for long-range ultra-luxury operations.</p>
-              </div>
-            </article>
-
-            <article className={styles.fleetCardItem}>
-              <div className={styles.fleetCardImgWrapper}>
-                <img 
-                  src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600" 
-                  alt="787-9" 
-                  className={styles.fleetCardImg}
-                  loading="lazy"
-                />
-                <div className={styles.fleetCardOverlay} />
-                <span className={styles.fleetCardReg}>HS-TGE</span>
-              </div>
-              <div className={styles.fleetCardContent}>
-                <h3 className={styles.fleetCardTitle}>Boeing 787-9 Dreamliner</h3>
-                <p className={styles.fleetCardText}>Advanced composite airframe offering state-of-the-art efficiency and pressure control.</p>
-              </div>
-            </article>
-
-            <article className={styles.fleetCardItem}>
-              <div className={styles.fleetCardImgWrapper}>
-                <img 
-                  src="https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?w=600" 
-                  alt="G650" 
-                  className={styles.fleetCardImg}
-                  loading="lazy"
-                />
-                <div className={styles.fleetCardOverlay} />
-                <span className={styles.fleetCardReg}>HS-TGD</span>
-              </div>
-              <div className={styles.fleetCardContent}>
-                <h3 className={styles.fleetCardTitle}>Gulfstream G650</h3>
-                <p className={styles.fleetCardText}>Ultra-high-speed corporate flagship jet configured for VIP travel.</p>
-              </div>
-            </article>
+            {fleet.slice(0, 3).map((aircraft) => (
+              <FleetCard 
+                key={aircraft.id || aircraft.registration} 
+                aircraft={aircraft} 
+                flights={flights} 
+              />
+            ))}
           </div>
 
-          <div className={styles.opsActionRow}>
+          <div className={styles.opsActionRow} style={{ marginTop: '40px' }}>
             <Link to="/fleet" className={styles.arrowLink}>
               View fleet registry <span>➔</span>
             </Link>
@@ -248,72 +225,70 @@ const HomePage = () => {
             <div className={styles.sectionHeader}>
               <span className={styles.kicker}>SYSTEM TELEMETRY HUD</span>
               <h2 className={styles.sectionTitle}>Real-time Flight Lookup Console</h2>
-              <p className={styles.hudSubDesc}>
-                Instantly query active airspace routes, gate allocations, and flight status records across the entire global network.
+              <p className={styles.searchSub}>
+                Instantly monitor current operations, gates, and statuses directly from the dynamic HUD database.
               </p>
             </div>
 
-            {/* Controlled Search Form */}
-            <div className={styles.searchForm}>
-              <div className={styles.formGrid}>
-                <div className={styles.inputField}>
-                  <label className={styles.inputLabel}>Telemetry Query</label>
-                  <input 
-                    type="text" 
-                    placeholder="Enter Flight #, Airport (e.g. BKK), or Gate..."
-                    value={hudSearch}
-                    onChange={(e) => setHudSearch(e.target.value)}
-                    className={styles.formInput}
-                  />
-                </div>
-                <div className={styles.inputField}>
-                  <label className={styles.inputLabel}>Operations Status</label>
-                  <select 
-                    value={hudStatus}
-                    onChange={(e) => setHudStatus(e.target.value)}
-                    className={styles.formSelect}
+            {/* Filter controls */}
+            <div className={styles.hudFilters}>
+              <input
+                type="text"
+                placeholder="Search flight, destination, gate..."
+                value={hudSearch}
+                onChange={(e) => setHudSearch(e.target.value)}
+                className={styles.hudSearchInput}
+              />
+              <div className={styles.hudButtons}>
+                {['ALL', 'ON_TIME', 'BOARDING', 'DELAYED', 'CANCELLED'].map((st) => (
+                  <button
+                    key={st}
+                    onClick={() => setHudStatus(st)}
+                    className={`${styles.hudTabBtn} ${hudStatus === st ? styles.activeHudTab : ''}`}
                   >
-                    <option value="ALL">All Operations</option>
-                    <option value="ON_TIME">On Time</option>
-                    <option value="BOARDING">Boarding</option>
-                    <option value="DELAYED">Delayed</option>
-                    <option value="CANCELLED">Cancelled</option>
-                  </select>
-                </div>
+                    {st.replace('_', ' ')}
+                  </button>
+                ))}
               </div>
+            </div>
 
-              {/* Dynamic HUD Search Results */}
-              <div className={styles.hudResults}>
-                {filteredHudFlights.length === 0 ? (
-                  <div className={styles.hudEmpty}>
-                    🛰️ NO ACTIVE TELEMETRY LOGS MATCHING QUERY
-                  </div>
-                ) : (
-                  <div className={styles.hudGrid}>
-                    {filteredHudFlights.slice(0, 4).map((flight) => (
-                      <div 
-                        key={`hud-${flight.id}`} 
-                        className={styles.hudCard}
-                        onClick={() => navigate(`/flights/${flight.id}`)}
-                      >
-                        <div className={styles.hudCardHeader}>
-                          <span className={styles.hudFlightNum}>{flight.flightNumber}</span>
-                          <span className={styles.hudGate}>Gate {flight.gate}</span>
-                        </div>
-                        <div className={styles.hudCardRoute}>
-                          <span>{flight.origin}</span>
-                          <span className={styles.hudRouteArrow}>➔</span>
-                          <span>{flight.destination}</span>
-                        </div>
-                        <div className={styles.hudCardFooter}>
-                          <span className={styles.hudTime}>{flight.departure} - {flight.arrival}</span>
-                          <span className={styles.hudActionBtn}>Open Logs ↗</span>
-                        </div>
+            {/* HUD Results Grid */}
+            <div className={styles.hudGrid}>
+              {filteredHudFlights.length === 0 ? (
+                <div className={styles.hudEmpty}>
+                  No flights match the current query in the operational matrix.
+                </div>
+              ) : (
+                filteredHudFlights.map((flight) => (
+                  <div 
+                    key={flight.id} 
+                    className={styles.hudCard}
+                    onClick={() => navigate(`/flights/${flight.id}`)}
+                  >
+                    <div className={styles.hudCardHeader}>
+                      <span className={styles.hudFlightNumber}>{flight.flightNumber}</span>
+                      <StatusPill status={flight.status} />
+                    </div>
+                    
+                    <div className={styles.hudRouteRow}>
+                      <span className={styles.hudApt}>{flight.origin}</span>
+                      <span className={styles.hudArrow}>➔</span>
+                      <span className={styles.hudApt}>{flight.destination}</span>
+                    </div>
+
+                    <div className={styles.hudDetails}>
+                      <div className={styles.hudDetailItem}>
+                        <span className={styles.hudLabel}>DEPARTURE</span>
+                        <span className={styles.hudVal}>{flight.departure || flight.departureTime}</span>
                       </div>
-                    ))}
+                      <div className={styles.hudDetailItem}>
+                        <span className={styles.hudLabel}>GATE</span>
+                        <span className={styles.hudVal}>{flight.gate}</span>
+                      </div>
+                    </div>
                   </div>
-                )}
-              </div>
+                ))
+              )}
             </div>
           </div>
         </div>
