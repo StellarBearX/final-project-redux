@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFleet } from './fleetSlice';
+import { fetchFlights } from '../flights/flightsSlice';
 import FleetCard from '../../components/FleetCard/FleetCard';
 import Spinner from '../../components/Spinner/Spinner';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
@@ -14,12 +15,18 @@ const FleetPage = () => {
   const status = useSelector((state) => state.fleet.status);
   const error = useSelector((state) => state.fleet.error);
 
+  const flights = useSelector((state) => state.flights.items);
+  const flightsStatus = useSelector((state) => state.flights.status);
+
   // Local Filter state
   const [activeFilter, setActiveFilter] = useState('ALL'); // ALL | ACTIVE | MAINTENANCE | RETIRED
 
   useEffect(() => {
     dispatch(fetchFleet());
-  }, [dispatch]);
+    if (flightsStatus === 'idle') {
+      dispatch(fetchFlights());
+    }
+  }, [dispatch, flightsStatus]);
 
   // Filtered fleet list
   const filteredFleet = fleet.filter((aircraft) => {
@@ -69,7 +76,11 @@ const FleetPage = () => {
               ) : (
                 <div className={styles.grid}>
                   {filteredFleet.map((aircraft) => (
-                    <FleetCard key={aircraft.id || aircraft.registration} aircraft={aircraft} />
+                    <FleetCard 
+                      key={aircraft.id || aircraft.registration} 
+                      aircraft={aircraft} 
+                      flights={flights}
+                    />
                   ))}
                 </div>
               )}

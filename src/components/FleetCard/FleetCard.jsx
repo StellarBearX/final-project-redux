@@ -16,24 +16,60 @@ const MODEL_IMAGES = {
 
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=800';
 
-const FleetCard = ({ aircraft }) => {
-  const getProgressColor = (status) => {
-    switch (status?.toUpperCase()) {
-      case 'RETIRED':
-        return 'var(--red)';
-      case 'MAINTENANCE':
-        return 'var(--amber)';
-      default:
-        return 'var(--accent)';
+const FleetCard = ({ aircraft, flights = [] }) => {
+  // Find flights assigned to this specific aircraft
+  const assignedFlights = flights.filter(
+    (f) => f.aircraftId === aircraft.registration || f.aircraftId === aircraft.id
+  );
+
+  // Compute dynamic status based on active flights assigned
+  const dbStatus = aircraft.status?.toUpperCase();
+  let computedStatus = aircraft.status || 'Active';
+
+  if (dbStatus === 'RETIRED') {
+    computedStatus = 'Retired';
+  } else if (dbStatus === 'MAINTENANCE') {
+    computedStatus = 'Maintenance';
+  } else if (assignedFlights.length > 0) {
+    const hasBoarding = assignedFlights.some((f) => f.status?.toUpperCase() === 'BOARDING');
+    const hasDelayed = assignedFlights.some((f) => f.status?.toUpperCase() === 'DELAYED');
+    const hasCancelled = assignedFlights.every((f) => f.status?.toUpperCase() === 'CANCELLED');
+    
+    if (hasBoarding) {
+      computedStatus = 'Active - Boarding';
+    } else if (hasDelayed) {
+      computedStatus = 'Active - Delayed';
+    } else if (hasCancelled) {
+      computedStatus = 'Active - Standby';
+    } else {
+      computedStatus = 'Active - Cruising';
     }
+  } else {
+    computedStatus = 'Active - Standby';
+  }
+
+  // Compute dynamic utilisation index based on schedules
+  let utilisation = 15; // default standby index
+  if (dbStatus === 'RETIRED' || dbStatus === 'MAINTENANCE') {
+    utilisation = 0;
+  } else {
+    const count = assignedFlights.length;
+    if (count === 1) utilisation = 45;
+    else if (count === 2) utilisation = 75;
+    else if (count >= 3) utilisation = 95;
+  }
+
+  const getProgressColor = (statusText) => {
+    const upper = statusText?.toUpperCase() || '';
+    if (upper.includes('RETIRED')) return 'var(--red)';
+    if (upper.includes('MAINTENANCE')) return 'var(--amber)';
+    if (upper.includes('STANDBY')) return 'rgba(0, 212, 255, 0.4)';
+    return 'var(--accent)';
   };
 
   // Determine correct image URL based on airliner model name
   const modelName = aircraft.model || '';
   const imageUrl = MODEL_IMAGES[modelName] || DEFAULT_IMAGE;
-
-  // Render mock utilisation level if not present in the backend database
-  const utilisation = aircraft.utilisation || Math.min(Math.max(Math.round(((new Date().getFullYear() - (aircraft.yearOfManufacture || 2018)) / 15) * 100), 20), 85);
   const mfgYear = aircraft.yearOfManufacture || aircraft.year || 2018;
 
   return (
@@ -48,7 +84,7 @@ const FleetCard = ({ aircraft }) => {
         />
         <div className={styles.imageOverlay} />
         <div className={styles.pillContainer}>
-          <StatusPill status={aircraft.status} />
+          <StatusPill status={computedStatus} />
         </div>
       </div>
 
@@ -73,6 +109,10 @@ const FleetCard = ({ aircraft }) => {
             <span className={styles.specLabel}>Year of Mfg</span>
             <span className={`${styles.specVal} ${styles.specValMono}`}>{mfgYear}</span>
           </div>
+          <div className={styles.specRow}>
+            <span className={styles.specLabel}>Assigned Logs</span>
+            <span className={`${styles.specVal} ${styles.specValMono} ${styles.specValAccent}`}>{assignedFlights.length} Flights</span>
+          </div>
         </div>
 
         {/* Utilisation Level */}
@@ -86,7 +126,7 @@ const FleetCard = ({ aircraft }) => {
               className={styles.bar} 
               style={{ 
                 width: `${utilisation}%`,
-                backgroundColor: getProgressColor(aircraft.status)
+                backgroundColor: getProgressColor(computedStatus)
               }} 
             />
           </div>

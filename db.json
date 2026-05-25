@@ -117,8 +117,7 @@
       "departure": "08:00",
       "arrival": "12:00",
       "gate": "A01",
-      "status": "BOARDING",
-      "apiId": "v1",
+      "status": "ON_TIME",
       "id": "tDxH5A8"
     }
   ],
