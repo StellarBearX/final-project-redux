@@ -1,0 +1,152 @@
+.tableContainer {
+  width: 100%;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.headerRow {
+  background-color: rgba(7, 8, 12, 0.4);
+  border-bottom: 1px solid var(--border);
+}
+
+.headerCell {
+  padding: 16px 24px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  font-family: var(--font-body);
+}
+
+.bodyRow {
+  border-bottom: 1px solid rgba(30, 35, 48, 0.35);
+  transition: all 180ms ease;
+}
+
+.bodyRow:hover {
+  background-color: rgba(0, 212, 255, 0.015);
+}
+
+.emptyCell {
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.codeCell {
+  padding: 16px 24px;
+}
+
+.flightLink {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.88rem;
+  transition: color 180ms ease;
+}
+
+.flightLink:hover {
+  color: var(--accent);
+}
+
+.routeCell {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iata {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.arrow {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.timeCell {
+  padding: 16px 24px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.gateCell {
+  padding: 16px 24px;
+}
+
+.gateBadge {
+  font-family: var(--font-mono);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-weight: 700;
+  background: transparent;
+  display: inline-block;
+}
+
+.statusCell {
+  padding: 16px 24px;
+}
+
+.actionsCell {
+  padding: 16px 24px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.actionBtn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.editBtn {
+  border-color: rgba(240, 242, 247, 0.12);
+  color: var(--text);
+}
+
+.editBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background-color: rgba(0, 212, 255, 0.03);
+}
+
+.deleteBtn {
+  border-color: rgba(255, 59, 59, 0.12);
+  color: var(--red);
+}
+
+.deleteBtn:hover {
+  border-color: var(--red);
+  background-color: rgba(255, 59, 59, 0.05);
+  box-shadow: 0 0 8px rgba(255, 59, 59, 0.1);
+}
