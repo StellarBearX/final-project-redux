@@ -1,0 +1,219 @@
+.main {
+  background-color: var(--bg);
+  min-height: 100vh;
+  padding-top: 120px; /* offset fixed navbar */
+  padding-bottom: 80px;
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.backBtn {
+  background: transparent;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  width: fit-content;
+  transition: color 180ms ease;
+  align-self: flex-start;
+}
+
+.backBtn:hover {
+  color: var(--accent);
+}
+
+.telemetryCard {
+  background-color: var(--surface);
+  border: 1px solid rgba(0, 212, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(30, 35, 48, 0.4);
+  padding-bottom: 24px;
+}
+
+.cardTitleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kicker {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.flightNum {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+/* Route Visualization */
+.pathVisual {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0;
+  background-color: rgba(7, 8, 12, 0.2);
+  border-radius: var(--radius-md);
+  border: 1px dashed rgba(30, 35, 48, 0.5);
+}
+
+.station {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.iataCode {
+  font-family: var(--font-body);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+}
+
+.stationLabel {
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 2;
+  gap: 16px;
+}
+
+.line {
+  height: 1px;
+  background-color: var(--border);
+  flex: 1;
+}
+
+.planeMark {
+  font-size: 1.25rem;
+  color: var(--accent);
+  animation: glide 3s ease-in-out infinite alternate;
+}
+
+@keyframes glide {
+  from {
+    transform: translateY(-2px);
+  }
+  to {
+    transform: translateY(2px);
+  }
+}
+
+/* Details Panel Grid */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 24px;
+}
+
+.detailBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detailLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+.detailVal {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.monoText {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.gateBadge {
+  font-family: var(--font-mono);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  font-size: 0.88rem;
+  color: var(--accent);
+  font-weight: 700;
+  background: transparent;
+  width: fit-content;
+}
+
+/* Alert status notes */
+.alertNote {
+  display: flex;
+  gap: 16px;
+  background-color: rgba(0, 212, 255, 0.02);
+  border: 1px solid rgba(0, 212, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  align-items: flex-start;
+}
+
+.noteIndicator {
+  color: var(--accent);
+  font-size: 0.65rem;
+  margin-top: 4px;
+}
+
+.noteText {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 576px) {
+  .iataCode {
+    font-size: 1.85rem;
+  }
+  .pathVisual {
+    padding: 16px 0;
+  }
+  .connector {
+    flex: 1;
+    gap: 8px;
+  }
+}

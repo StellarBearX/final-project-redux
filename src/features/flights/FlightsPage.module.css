@@ -1,0 +1,159 @@
+.main {
+  background-color: var(--bg);
+  min-height: 100vh;
+  padding-top: 120px; /* offset fixed navbar */
+  padding-bottom: 80px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.headerTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kicker {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.addBtn {
+  background-color: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--bg);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+
+.addBtn:hover {
+  background-color: #33ddff;
+  border-color: #33ddff;
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Stats Grid */
+.statsSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.statCard {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.statLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+.statValue {
+  font-family: var(--font-mono);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.statGreen .statValue {
+  color: var(--green);
+}
+
+.statCyan .statValue {
+  color: var(--accent);
+}
+
+.statAmber .statValue {
+  color: var(--amber);
+}
+
+.statRed .statValue {
+  color: var(--red);
+}
+
+/* Filter Chips Bar */
+.filterSection {
+  display: flex;
+  align-items: center;
+}
+
+.filterGroup {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterChip {
+  background-color: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.filterChip:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+  color: var(--accent);
+}
+
+.activeChip {
+  background-color: rgba(0, 212, 255, 0.06) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+}
+
+/* Content Area */
+.contentSection {
+  width: 100%;
+}
