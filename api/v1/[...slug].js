@@ -1,0 +1,111 @@
+'use strict';
+
+// Seed data embedded directly — readable on Vercel's read-only filesystem
+const SEED = {
+  flights: [
+    { id: '1', flightNumber: 'NM101', origin: 'BKK', destination: 'LHR', departure: '08:30', arrival: '14:45', status: 'ON_TIME',   aircraftId: 'HS-TGA', gate: 'A12' },
+    { id: '2', flightNumber: 'NM202', origin: 'BKK', destination: 'NRT', departure: '11:15', arrival: '19:00', status: 'BOARDING',  aircraftId: 'HS-TGB', gate: 'B04' },
+    { id: '3', flightNumber: 'NM303', origin: 'SIN', destination: 'BKK', departure: '14:00', arrival: '15:20', status: 'DELAYED',   aircraftId: 'HS-TGC', gate: 'C07' },
+    { id: '4', flightNumber: 'NM404', origin: 'BKK', destination: 'DXB', departure: '23:55', arrival: '03:30', status: 'ON_TIME',   aircraftId: 'HS-TGE', gate: 'D02' },
+    { id: '5', flightNumber: 'NM505', origin: 'CDG', destination: 'BKK', departure: '07:00', arrival: '22:15', status: 'ON_TIME',   aircraftId: 'HS-TGA', gate: 'A01' },
+    { id: '6', flightNumber: 'NM606', origin: 'BKK', destination: 'SYD', departure: '16:30', arrival: '06:45', status: 'CANCELLED', aircraftId: 'HS-TGG', gate: 'B11' },
+    { id: '7', flightNumber: 'NM707', origin: 'HKG', destination: 'BKK', departure: '09:45', arrival: '11:50', status: 'BOARDING',  aircraftId: 'HS-TGC', gate: 'C03' },
+    { id: '8', flightNumber: 'NM808', origin: 'BKK', destination: 'KUL', departure: '13:20', arrival: '16:10', status: 'ON_TIME',   aircraftId: 'HS-TGB', gate: 'A08' },
+    { id: '9', flightNumber: 'NM909', origin: 'MNL', destination: 'BKK', departure: '06:00', arrival: '08:15', status: 'DELAYED',   aircraftId: 'HS-TGE', gate: 'D09' },
+    { id: '10', flightNumber: 'NM010', origin: 'BKK', destination: 'LAX', departure: '00:15', arrival: '18:30', status: 'ON_TIME',  aircraftId: 'HS-TGG', gate: 'B06' },
+  ],
+  aircraft: [
+    { id: '1', registration: 'HS-TGA', model: 'Boeing 777-300ER',        manufacturer: 'Boeing',  capacity: 396, status: 'Active',      yearOfManufacture: 2015 },
+    { id: '2', registration: 'HS-TGB', model: 'Airbus A350-900',         manufacturer: 'Airbus',  capacity: 325, status: 'Active',      yearOfManufacture: 2018 },
+    { id: '3', registration: 'HS-TGC', model: 'Boeing 787-9 Dreamliner', manufacturer: 'Boeing',  capacity: 296, status: 'Active',      yearOfManufacture: 2019 },
+    { id: '4', registration: 'HS-TGD', model: 'Airbus A380-800',         manufacturer: 'Airbus',  capacity: 507, status: 'Maintenance', yearOfManufacture: 2012 },
+    { id: '5', registration: 'HS-TGE', model: 'Boeing 777-200LR',        manufacturer: 'Boeing',  capacity: 317, status: 'Active',      yearOfManufacture: 2014 },
+    { id: '6', registration: 'HS-TGF', model: 'Airbus A330-300',         manufacturer: 'Airbus',  capacity: 289, status: 'Maintenance', yearOfManufacture: 2010 },
+    { id: '7', registration: 'HS-TGG', model: 'Boeing 787-8 Dreamliner', manufacturer: 'Boeing',  capacity: 248, status: 'Active',      yearOfManufacture: 2017 },
+    { id: '8', registration: 'HS-TGH', model: 'Airbus A320neo',          manufacturer: 'Airbus',  capacity: 180, status: 'Retired',     yearOfManufacture: 2008 },
+  ],
+};
+
+// Module-level store — shared across warm invocations of this function instance
+const store = {
+  flights:  JSON.parse(JSON.stringify(SEED.flights)),
+  aircraft: JSON.parse(JSON.stringify(SEED.aircraft)),
+};
+
+const maxIds = {
+  flights:  Math.max(...SEED.flights.map(f => parseInt(f.id, 10))),
+  aircraft: Math.max(...SEED.aircraft.map(a => parseInt(a.id, 10))),
+};
+
+function setCors(res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+
+export default function handler(req, res) {
+  setCors(res);
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // slug is an array: ['flights'] or ['flights', '1']
+  const { slug } = req.query;
+  const [resource, id] = Array.isArray(slug) ? slug : [slug];
+
+  if (!store[resource]) {
+    return res.status(404).json({ error: 'Unknown resource' });
+  }
+
+  // GET list
+  if (req.method === 'GET' && !id) {
+    return res.status(200).json(store[resource]);
+  }
+
+  // GET one
+  if (req.method === 'GET' && id) {
+    const item = store[resource].find(x => String(x.id) === String(id));
+    return item ? res.status(200).json(item) : res.status(404).json({ error: 'Not found' });
+  }
+
+  // POST
+  if (req.method === 'POST') {
+    const body = req.body || {};
+    maxIds[resource] = (maxIds[resource] || 0) + 1;
+    body.id = String(maxIds[resource]);
+    store[resource].push(body);
+    return res.status(201).json(body);
+  }
+
+  if (!id) {
+    return res.status(400).json({ error: 'ID required' });
+  }
+
+  const idx = store[resource].findIndex(x => String(x.id) === String(id));
+  if (idx === -1) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+
+  // PUT
+  if (req.method === 'PUT') {
+    const body = req.body || {};
+    body.id = id;
+    store[resource][idx] = body;
+    return res.status(200).json(store[resource][idx]);
+  }
+
+  // PATCH
+  if (req.method === 'PATCH') {
+    store[resource][idx] = { ...store[resource][idx], ...(req.body || {}) };
+    return res.status(200).json(store[resource][idx]);
+  }
+
+  // DELETE
+  if (req.method === 'DELETE') {
+    store[resource].splice(idx, 1);
+    return res.status(200).json({});
+  }
+
+  return res.status(405).json({ error: 'Method not allowed' });
+}
